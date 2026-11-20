@@ -63,6 +63,68 @@ object CuratedCatalog {
         subscribed = subscribed
     )
 
+    private fun gl(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        project: String,
+        color: Long,
+        region: ServiceRegion = ServiceRegion.GLOBAL
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.GITLAB_RELEASES,
+        sourceUrlOrRepo = project,
+        region = region,
+        accentColorHex = color
+    )
+
+    private fun npm(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        pkg: String,
+        color: Long
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.NPM_REGISTRY,
+        sourceUrlOrRepo = pkg,
+        accentColorHex = color
+    )
+
+    private fun pypi(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        pkg: String,
+        color: Long
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.PYPI_PACKAGE,
+        sourceUrlOrRepo = pkg,
+        accentColorHex = color
+    )
+
+    private fun docker(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        image: String,
+        color: Long
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.DOCKER_HUB,
+        sourceUrlOrRepo = image,
+        accentColorHex = color
+    )
+
     val defaultServices: List<TrackedServiceEntity> = buildList {
         // =====================================================================
         // 1. GOOGLE & PIXEL (35)
@@ -588,5 +650,75 @@ object CuratedCatalog {
         add(apkm("asia_bilibili", "Bilibili", ServiceCategory.SMART_HOME_MEDIA, "bilibili/bilibili", 0xFFF472B6L, region = ServiceRegion.ASIA))
         add(apkm("asia_rakuten", "Rakuten", ServiceCategory.SELF_HOSTED, "rakuten-inc/rakuten", 0xFFEF4444L, region = ServiceRegion.ASIA))
         add(apkm("asia_jiohotstar", "JioHotstar", ServiceCategory.SMART_HOME_MEDIA, "novi-digital/hotstar", 0xFF2563EBL, region = ServiceRegion.ASIA))
+
+        // =====================================================================
+        // 16. GITLAB RELEASES (8)
+        // =====================================================================
+        add(gl("gl_aurora_store", "Aurora Store (GitLab)", ServiceCategory.ANDROID_POWER, "AuroraOSS/AuroraStore", 0xFF38BDF8L))
+        add(gl("gl_fdroid_client", "F-Droid Client (GitLab)", ServiceCategory.ANDROID_POWER, "fdroid/fdroidclient", 0xFF22C55EL))
+        add(gl("gl_inkscape", "Inkscape (GitLab)", ServiceCategory.PC_DEV, "inkscape/inkscape", 0xFFE2E8F0L))
+        add(gl("gl_gitlab_runner", "GitLab Runner", ServiceCategory.PC_DEV, "gitlab-org/gitlab-runner", 0xFFF97316L))
+        add(gl("gl_gitlab_cli", "GitLab CLI (glab)", ServiceCategory.PC_DEV, "gitlab-org/cli", 0xFFF97316L))
+        add(gl("gl_organic_maps", "Organic Maps (GitLab)", ServiceCategory.GOOGLE_PIXEL, "organicmaps/organicmaps", 0xFF10B981L))
+        add(gl("gl_veloren", "Veloren (GitLab)", ServiceCategory.GAMING_EMULATION, "veloren/veloren", 0xFF38BDF8L))
+        add(gl("gl_postmarketos", "biktorgj / PinePhone Modem", ServiceCategory.ANDROID_POWER, "postmarketOS/pmbootstrap", 0xFF22C55EL))
+
+        // =====================================================================
+        // 17. NPM REGISTRY PACKAGES (12)
+        // =====================================================================
+        add(npm("npm_claude_code", "Claude Code CLI (npm)", ServiceCategory.AI_LLM, "@anthropic-ai/claude-code", 0xFFF97316L))
+        add(npm("npm_openai_codex", "OpenAI Codex CLI (npm)", ServiceCategory.AI_LLM, "@openai/codex", 0xFF10B981L))
+        add(npm("npm_gemini_cli", "Google Gemini CLI (npm)", ServiceCategory.AI_LLM, "@google/gemini-cli", 0xFF60A5FAL))
+        add(npm("npm_typescript", "TypeScript (npm)", ServiceCategory.PC_DEV, "typescript", 0xFF3B82F6L))
+        add(npm("npm_nextjs", "Next.js (npm)", ServiceCategory.PC_DEV, "next", 0xFFE2E8F0L))
+        add(npm("npm_react", "React (npm)", ServiceCategory.PC_DEV, "react", 0xFF38BDF8L))
+        add(npm("npm_vite", "Vite (npm)", ServiceCategory.PC_DEV, "vite", 0xFFA855F7L))
+        add(npm("npm_tailwindcss", "Tailwind CSS (npm)", ServiceCategory.PC_DEV, "tailwindcss", 0xFF06B6D4L))
+        add(npm("npm_pnpm", "pnpm (npm)", ServiceCategory.PC_DEV, "pnpm", 0xFFFBBF24L))
+        add(npm("npm_eslint", "ESLint (npm)", ServiceCategory.PC_DEV, "eslint", 0xFF818CF8L))
+        add(npm("npm_prisma", "Prisma ORM (npm)", ServiceCategory.PC_DEV, "prisma", 0xFF2DD4BFL))
+        add(npm("npm_playwright", "Playwright (npm)", ServiceCategory.PC_DEV, "playwright", 0xFF22C55EL))
+
+        // =====================================================================
+        // 18. PYPI PYTHON PACKAGES (12)
+        // =====================================================================
+        add(pypi("pypi_openai", "openai (PyPI)", ServiceCategory.AI_LLM, "openai", 0xFF10B981L))
+        add(pypi("pypi_anthropic", "anthropic (PyPI)", ServiceCategory.AI_LLM, "anthropic", 0xFFF97316L))
+        add(pypi("pypi_google_genai", "google-genai (PyPI)", ServiceCategory.AI_LLM, "google-genai", 0xFF60A5FAL))
+        add(pypi("pypi_langchain", "langchain (PyPI)", ServiceCategory.AI_LLM, "langchain", 0xFF22C55EL))
+        add(pypi("pypi_transformers", "transformers (PyPI)", ServiceCategory.AI_LLM, "transformers", 0xFFFBBF24L))
+        add(pypi("pypi_torch", "PyTorch (PyPI)", ServiceCategory.AI_LLM, "torch", 0xFFEF4444L))
+        add(pypi("pypi_fastapi", "FastAPI (PyPI)", ServiceCategory.PC_DEV, "fastapi", 0xFF14B8A6L))
+        add(pypi("pypi_pydantic", "Pydantic (PyPI)", ServiceCategory.PC_DEV, "pydantic", 0xFFF43F5EL))
+        add(pypi("pypi_uv", "uv (PyPI)", ServiceCategory.PC_DEV, "uv", 0xFFA855F7L))
+        add(pypi("pypi_ruff", "Ruff (PyPI)", ServiceCategory.PC_DEV, "ruff", 0xFFD946EFL))
+        add(pypi("pypi_yt_dlp", "yt-dlp (PyPI)", ServiceCategory.SMART_HOME_MEDIA, "yt-dlp", 0xFFEF4444L))
+        add(pypi("pypi_homeassistant", "Home Assistant Core (PyPI)", ServiceCategory.SMART_HOME_MEDIA, "homeassistant", 0xFF38BDF8L))
+
+        // =====================================================================
+        // 19. DOCKER HUB IMAGES (12)
+        // =====================================================================
+        add(docker("docker_nginx", "Nginx (Docker Hub)", ServiceCategory.SELF_HOSTED, "nginx", 0xFF22C55EL))
+        add(docker("docker_postgres", "PostgreSQL (Docker Hub)", ServiceCategory.SELF_HOSTED, "postgres", 0xFF3B82F6L))
+        add(docker("docker_redis", "Redis (Docker Hub)", ServiceCategory.SELF_HOSTED, "redis", 0xFFEF4444L))
+        add(docker("docker_traefik", "Traefik Proxy (Docker Hub)", ServiceCategory.SELF_HOSTED, "traefik", 0xFF06B6D4L))
+        add(docker("docker_portainer", "Portainer CE (Docker Hub)", ServiceCategory.SELF_HOSTED, "portainer/portainer-ce", 0xFF38BDF8L))
+        add(docker("docker_uptime_kuma", "Uptime Kuma (Docker Hub)", ServiceCategory.SELF_HOSTED, "louislam/uptime-kuma", 0xFF22C55EL))
+        add(docker("docker_jellyfin", "Jellyfin (Docker Hub)", ServiceCategory.SMART_HOME_MEDIA, "jellyfin/jellyfin", 0xFFA855F7L))
+        add(docker("docker_plex", "Plex Media Server (Docker Hub)", ServiceCategory.SMART_HOME_MEDIA, "linuxserver/plex", 0xFFFBBF24L))
+        add(docker("docker_qbittorrent", "qBittorrent (Docker Hub)", ServiceCategory.SELF_HOSTED, "linuxserver/qbittorrent", 0xFF60A5FAL))
+        add(docker("docker_homeassistant", "Home Assistant (Docker Hub)", ServiceCategory.SMART_HOME_MEDIA, "homeassistant/home-assistant", 0xFF38BDF8L))
+        add(docker("docker_dozzle", "Dozzle Log Viewer (Docker Hub)", ServiceCategory.SELF_HOSTED, "amir20/dozzle", 0xFF14B8A6L))
+        add(docker("docker_caddy", "Caddy Web Server (Docker Hub)", ServiceCategory.SELF_HOSTED, "caddy", 0xFF10B981L))
+
+        // =====================================================================
+        // 20. CLOUD & AI STATUS FEEDS (6)
+        // =====================================================================
+        add(rss("status_github", "GitHub Status", ServiceCategory.PC_DEV, "https://www.githubstatus.com/history.rss", 0xFFE2E8F0L))
+        add(rss("status_cloudflare", "Cloudflare Status", ServiceCategory.SECURITY_PRIVACY, "https://www.cloudflarestatus.com/history.rss", 0xFFF97316L))
+        add(rss("status_openai", "OpenAI Status", ServiceCategory.AI_LLM, "https://status.openai.com/history.rss", 0xFF10B981L))
+        add(rss("status_anthropic", "Anthropic (Claude) Status", ServiceCategory.AI_LLM, "https://status.anthropic.com/history.rss", 0xFFF97316L))
+        add(rss("status_discord", "Discord Status", ServiceCategory.MESSAGING_SOCIAL, "https://discordstatus.com/history.rss", 0xFF818CF8L))
+        add(rss("status_vercel", "Vercel Status", ServiceCategory.PC_DEV, "https://www.vercel-status.com/history.rss", 0xFFE2E8F0L))
     }
 }

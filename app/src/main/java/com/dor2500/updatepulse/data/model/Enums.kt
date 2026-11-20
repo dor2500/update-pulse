@@ -32,6 +32,10 @@ enum class ServiceRegion(@StringRes val labelRes: Int) {
 @Serializable
 enum class SourceType(@StringRes val labelRes: Int) {
     GITHUB_RELEASES(R.string.source_github),
+    GITLAB_RELEASES(R.string.source_gitlab),
+    NPM_REGISTRY(R.string.source_npm),
+    PYPI_PACKAGE(R.string.source_pypi),
+    DOCKER_HUB(R.string.source_docker),
     RSS_ATOM(R.string.source_rss),
     JSON_ENDPOINT(R.string.source_json),
     WEBPAGE_REGEX(R.string.source_webpage)

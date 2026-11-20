@@ -1,14 +1,20 @@
 package com.dor2500.updatepulse.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.format.DateUtils
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material.icons.rounded.DoneAll
 import androidx.compose.material.icons.rounded.Refresh
@@ -65,6 +72,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dor2500.updatepulse.R
 import com.dor2500.updatepulse.data.local.UpdateEventEntity
+import com.dor2500.updatepulse.data.model.ServiceCategory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,12 +85,18 @@ fun FeedScreen(
     onClearFeed: () -> Unit
 ) {
     var showUnreadOnly by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf<ServiceCategory?>(null) }
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
-    val filtered = remember(events, showUnreadOnly, searchQuery) {
+    val availableCategories = remember(events) {
+        events.map { it.category }.distinct()
+    }
+
+    val filtered = remember(events, showUnreadOnly, selectedCategory, searchQuery) {
         events
             .filter { !showUnreadOnly || !it.isRead }
+            .filter { selectedCategory == null || it.category == selectedCategory }
             .filter {
                 searchQuery.isBlank() ||
                     it.serviceName.contains(searchQuery, ignoreCase = true) ||
@@ -153,19 +167,34 @@ fun FeedScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             FilterChip(
-                selected = !showUnreadOnly,
-                onClick = { showUnreadOnly = false },
+                selected = !showUnreadOnly && selectedCategory == null,
+                onClick = {
+                    showUnreadOnly = false
+                    selectedCategory = null
+                },
                 label = { Text(stringResource(R.string.feed_filter_all)) }
             )
             FilterChip(
                 selected = showUnreadOnly,
-                onClick = { showUnreadOnly = true },
+                onClick = { showUnreadOnly = !showUnreadOnly },
                 label = { Text(stringResource(R.string.feed_filter_unread)) }
             )
+            if (availableCategories.size > 1) {
+                availableCategories.forEach { category ->
+                    FilterChip(
+                        selected = selectedCategory == category,
+                        onClick = {
+                            selectedCategory = if (selectedCategory == category) null else category
+                        },
+                        label = { Text(stringResource(category.labelRes)) }
+                    )
+                }
+            }
         }
 
         PullToRefreshBox(
@@ -339,6 +368,20 @@ private fun UpdateEventCard(
                     TextButton(onClick = onMarkRead) {
                         Text(stringResource(R.string.feed_mark_read))
                     }
+                }
+                val copiedFormat = stringResource(R.string.feed_copied_version, "${event.serviceName} ${event.version}")
+                IconButton(onClick = {
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(
+                        ClipData.newPlainText("UpdatePulse Version", "${event.serviceName} ${event.version}")
+                    )
+                    Toast.makeText(context, copiedFormat, Toast.LENGTH_SHORT).show()
+                }) {
+                    Icon(
+                        imageVector = Icons.Rounded.ContentCopy,
+                        contentDescription = stringResource(R.string.feed_copy_version),
+                        modifier = Modifier.size(18.dp)
+                    )
                 }
                 IconButton(onClick = {
                     val shareIntent = Intent(Intent.ACTION_SEND).apply {

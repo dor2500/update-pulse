@@ -171,6 +171,8 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
                 NavTab.CUSTOM -> CustomScreen(
                     customServices = customServices,
                     onToggleSubscription = viewModel::toggleSubscription,
+                    onToggleNotifications = viewModel::toggleServiceNotifications,
+                    onCheckService = viewModel::checkSingleService,
                     onEdit = { service ->
                         editingCustomService = service
                         showCustomSheet = true

@@ -154,10 +154,13 @@ fun AddEditCustomSheet(
                 label = {
                     Text(
                         stringResource(
-                            if (sourceType == SourceType.GITHUB_RELEASES) {
-                                R.string.field_github_repo
-                            } else {
-                                R.string.field_url
+                            when (sourceType) {
+                                SourceType.GITHUB_RELEASES -> R.string.field_github_repo
+                                SourceType.GITLAB_RELEASES -> R.string.field_gitlab_project
+                                SourceType.NPM_REGISTRY -> R.string.field_npm_package
+                                SourceType.PYPI_PACKAGE -> R.string.field_pypi_package
+                                SourceType.DOCKER_HUB -> R.string.field_docker_image
+                                else -> R.string.field_url
                             }
                         )
                     )

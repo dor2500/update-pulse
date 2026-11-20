@@ -53,6 +53,7 @@ import com.dor2500.updatepulse.R
 import com.dor2500.updatepulse.data.local.TrackedServiceEntity
 import com.dor2500.updatepulse.data.model.ServiceCategory
 import com.dor2500.updatepulse.data.model.ServiceRegion
+import com.dor2500.updatepulse.data.model.SourceType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,14 +66,29 @@ fun CatalogScreen(
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<ServiceCategory?>(null) }
     var selectedRegion by remember { mutableStateOf<ServiceRegion?>(null) }
+    var selectedSourceType by remember { mutableStateOf<SourceType?>(null) }
     var subscribedOnly by remember { mutableStateOf(false) }
 
-    val catalogServices = remember(services, searchQuery, selectedCategory, selectedRegion, subscribedOnly) {
+    val hasActiveFilters = searchQuery.isNotBlank() ||
+        selectedCategory != null ||
+        selectedRegion != null ||
+        selectedSourceType != null ||
+        subscribedOnly
+
+    val catalogServices = remember(
+        services,
+        searchQuery,
+        selectedCategory,
+        selectedRegion,
+        selectedSourceType,
+        subscribedOnly
+    ) {
         services
             .filter { !it.isCustom }
             .filter { !subscribedOnly || it.isSubscribed }
             .filter { selectedCategory == null || it.category == selectedCategory }
             .filter { selectedRegion == null || it.region == selectedRegion }
+            .filter { selectedSourceType == null || it.sourceType == selectedSourceType }
             .filter {
                 searchQuery.isBlank() ||
                     it.name.contains(searchQuery, ignoreCase = true) ||
@@ -165,6 +181,42 @@ fun CatalogScreen(
                         selectedRegion = if (selectedRegion == region) null else region
                     },
                     label = { Text(stringResource(region.labelRes)) }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (hasActiveFilters) {
+                FilterChip(
+                    selected = false,
+                    onClick = {
+                        searchQuery = ""
+                        selectedCategory = null
+                        selectedRegion = null
+                        selectedSourceType = null
+                        subscribedOnly = false
+                    },
+                    label = { Text(stringResource(R.string.catalog_reset_filters)) }
+                )
+            }
+            FilterChip(
+                selected = selectedSourceType == null,
+                onClick = { selectedSourceType = null },
+                label = { Text(stringResource(R.string.catalog_all_sources)) }
+            )
+            SourceType.entries.forEach { source ->
+                FilterChip(
+                    selected = selectedSourceType == source,
+                    onClick = {
+                        selectedSourceType = if (selectedSourceType == source) null else source
+                    },
+                    label = { Text(stringResource(source.labelRes)) }
                 )
             }
         }
@@ -268,6 +320,16 @@ private fun CatalogServiceCard(
                         } ?: stringResource(R.string.catalog_not_checked),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                service.lastError?.takeIf { it.isNotBlank() }?.let { err ->
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = stringResource(R.string.catalog_error, err),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

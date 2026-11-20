@@ -18,6 +18,8 @@
     <string name="feed_empty_subtitle">Subscribe to services in the Catalog or add custom trackers, then tap Check Now.</string>
     <string name="feed_open_link">Open Link</string>
     <string name="feed_share">Share</string>
+    <string name="feed_copy_version">Copy</string>
+    <string name="feed_copied_version">Copied %1$s</string>
     <string name="feed_mark_read">Mark Read</string>
     <string name="feed_search_hint">Search updates…</string>
     <string name="feed_clear_history">Clear History</string>
@@ -30,8 +32,11 @@
     <string name="catalog_search_hint">Search services, categories…</string>
     <string name="catalog_all_categories">All</string>
     <string name="catalog_all_regions">All Regions</string>
+    <string name="catalog_all_sources">All Sources</string>
+    <string name="catalog_reset_filters">Reset</string>
     <string name="catalog_subscribed_only">Subscribed</string>
     <string name="catalog_count">%1$d services</string>
+    <string name="catalog_error">Error: %1$s</string>
 
     <!-- Regions -->
     <string name="region_global">Global</string>
@@ -65,6 +70,7 @@
     <string name="custom_empty_subtitle">Track any GitHub repository, RSS/Atom feed, JSON API, or webpage version string.</string>
     <string name="custom_edit">Edit</string>
     <string name="custom_delete">Delete</string>
+    <string name="custom_check_now">Check Now</string>
 
     <!-- Add/Edit Custom Modal -->
     <string name="add_custom_title">Add Custom Service</string>
@@ -73,10 +79,18 @@
     <string name="field_category">Category</string>
     <string name="field_source_type">Source Engine</string>
     <string name="source_github">GitHub Releases</string>
+    <string name="source_gitlab">GitLab Releases</string>
+    <string name="source_npm">npm Registry</string>
+    <string name="source_pypi">PyPI Package</string>
+    <string name="source_docker">Docker Hub</string>
     <string name="source_rss">RSS / Atom Feed</string>
     <string name="source_json">JSON Endpoint</string>
     <string name="source_webpage">Webpage Monitor</string>
     <string name="field_github_repo">Repository (owner/repo)</string>
+    <string name="field_gitlab_project">GitLab Project (group/project or URL)</string>
+    <string name="field_npm_package">npm Package (e.g. typescript or @scope/pkg)</string>
+    <string name="field_pypi_package">PyPI Package (e.g. fastapi)</string>
+    <string name="field_docker_image">Docker Image (e.g. nginx or linuxserver/plex)</string>
     <string name="field_include_prereleases">Include pre-releases</string>
     <string name="field_url">Endpoint / Feed URL</string>
     <string name="field_json_key">JSON Key / Path (e.g. tag_name or data.version)</string>

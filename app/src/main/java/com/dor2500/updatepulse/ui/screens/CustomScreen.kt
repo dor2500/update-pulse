@@ -21,6 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.NotificationsOff
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +52,8 @@ import com.dor2500.updatepulse.data.local.TrackedServiceEntity
 fun CustomScreen(
     customServices: List<TrackedServiceEntity>,
     onToggleSubscription: (TrackedServiceEntity) -> Unit,
+    onToggleNotifications: (TrackedServiceEntity) -> Unit,
+    onCheckService: (TrackedServiceEntity) -> Unit,
     onEdit: (TrackedServiceEntity) -> Unit,
     onDelete: (String) -> Unit
 ) {
@@ -169,6 +174,27 @@ fun CustomScreen(
                                     }
                                 }
                                 Row {
+                                    IconButton(onClick = { onCheckService(service) }) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Refresh,
+                                            contentDescription = stringResource(R.string.custom_check_now)
+                                        )
+                                    }
+                                    IconButton(onClick = { onToggleNotifications(service) }) {
+                                        Icon(
+                                            imageVector = if (service.notificationsEnabled) {
+                                                Icons.Rounded.Notifications
+                                            } else {
+                                                Icons.Rounded.NotificationsOff
+                                            },
+                                            contentDescription = null,
+                                            tint = if (service.notificationsEnabled) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.onSurfaceVariant
+                                            }
+                                        )
+                                    }
                                     IconButton(onClick = { onEdit(service) }) {
                                         Icon(
                                             imageVector = Icons.Rounded.Edit,
@@ -183,6 +209,16 @@ fun CustomScreen(
                                         )
                                     }
                                 }
+                            }
+                            service.lastError?.takeIf { it.isNotBlank() }?.let { err ->
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = stringResource(R.string.catalog_error, err),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                             }
                         }
                     }

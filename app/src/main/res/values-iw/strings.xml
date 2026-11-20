@@ -18,6 +18,8 @@
     <string name="feed_empty_subtitle">הירשם לשירותים בקטלוג או הוסף מקורות מותאמים אישית, ואז לחץ על בדוק עכשיו.</string>
     <string name="feed_open_link">פתח קישור</string>
     <string name="feed_share">שתף</string>
+    <string name="feed_copy_version">העתק</string>
+    <string name="feed_copied_version">הועתק: %1$s</string>
     <string name="feed_mark_read">סמן כנקרא</string>
     <string name="feed_search_hint">חפש עדכונים…</string>
     <string name="feed_clear_history">נקה היסטוריה</string>
@@ -30,8 +32,11 @@
     <string name="catalog_search_hint">חפש שירותים, קטגוריות…</string>
     <string name="catalog_all_categories">הכל</string>
     <string name="catalog_all_regions">כל המדינות</string>
+    <string name="catalog_all_sources">כל המקורות</string>
+    <string name="catalog_reset_filters">אפס</string>
     <string name="catalog_subscribed_only">במעקב בלבד</string>
     <string name="catalog_count">%1$d שירותים</string>
+    <string name="catalog_error">שגיאה: %1$s</string>
 
     <!-- Regions -->
     <string name="region_global">גלובלי</string>
@@ -65,6 +70,7 @@
     <string name="custom_empty_subtitle">עקוב אחר כל מאגר GitHub, פיד RSS/Atom, כתובת JSON או דף אינטרנט.</string>
     <string name="custom_edit">ערוך</string>
     <string name="custom_delete">מחק</string>
+    <string name="custom_check_now">בדוק עכשיו</string>
 
     <!-- Add/Edit Custom Modal -->
     <string name="add_custom_title">הוספת שירות מותאם אישית</string>
@@ -73,10 +79,18 @@
     <string name="field_category">קטגוריה</string>
     <string name="field_source_type">מנוע מקור</string>
     <string name="source_github">GitHub Releases</string>
+    <string name="source_gitlab">GitLab Releases</string>
+    <string name="source_npm">npm Registry</string>
+    <string name="source_pypi">חבילת PyPI</string>
+    <string name="source_docker">Docker Hub</string>
     <string name="source_rss">פיד RSS / Atom</string>
     <string name="source_json">נקודת קצה JSON</string>
     <string name="source_webpage">ניטור דף אינטרנט</string>
     <string name="field_github_repo">מאגר (owner/repo)</string>
+    <string name="field_gitlab_project">פרויקט GitLab (group/project או URL)</string>
+    <string name="field_npm_package">חבילת npm (למשל typescript או @scope/pkg)</string>
+    <string name="field_pypi_package">חבילת PyPI (למשל fastapi)</string>
+    <string name="field_docker_image">תמונת Docker (למשל nginx או linuxserver/plex)</string>
     <string name="field_include_prereleases">כלול גרסאות קדם-שחרור</string>
     <string name="field_url">כתובת URL של המקור</string>
     <string name="field_json_key">מפתח JSON (למשל tag_name או data.version)</string>

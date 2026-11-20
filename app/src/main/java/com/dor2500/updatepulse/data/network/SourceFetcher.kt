@@ -18,6 +18,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.xmlpull.v1.XmlPullParser
 import java.io.StringReader
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 data class FetchedRelease(
@@ -48,6 +50,10 @@ class SourceFetcher {
                         includePreReleases = service.includePreReleases,
                         githubToken = githubToken
                     )
+                    SourceType.GITLAB_RELEASES -> fetchGitLab(service.sourceUrlOrRepo.trim())
+                    SourceType.NPM_REGISTRY -> fetchNpm(service.sourceUrlOrRepo.trim())
+                    SourceType.PYPI_PACKAGE -> fetchPypi(service.sourceUrlOrRepo.trim())
+                    SourceType.DOCKER_HUB -> fetchDockerHub(service.sourceUrlOrRepo.trim())
                     SourceType.RSS_ATOM -> fetchRssAtom(service.sourceUrlOrRepo.trim())
                     SourceType.JSON_ENDPOINT -> fetchJson(
                         url = service.sourceUrlOrRepo.trim(),
@@ -124,6 +130,135 @@ class SourceFetcher {
             title = name,
             changelog = changelog.take(1500),
             url = htmlUrl
+        )
+    }
+
+    private fun fetchGitLab(repoOrUrl: String): FetchedRelease {
+        val trimmed = repoOrUrl.trim().trimEnd('/')
+        val (baseUrl, projectPath) = if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            val uri = java.net.URI(trimmed)
+            val origin = "${uri.scheme}://${uri.authority}"
+            val path = uri.path.trim('/')
+            origin to path
+        } else {
+            "https://gitlab.com" to trimmed
+        }
+        require(projectPath.contains("/")) { "Invalid GitLab project format. Expected group/project" }
+
+        val encodedPath = URLEncoder.encode(projectPath, StandardCharsets.UTF_8.name())
+        val apiUrl = "$baseUrl/api/v4/projects/$encodedPath/releases?per_page=1"
+        val body = executeGet(apiUrl, accept = "application/json")
+        val releaseObj = json.parseToJsonElement(body).jsonArray.firstOrNull()?.jsonObject
+            ?: throw IllegalStateException("No releases found for $projectPath")
+
+        val tagName = releaseObj["tag_name"]?.jsonPrimitive?.content.orEmpty()
+        val name = releaseObj["name"]?.jsonPrimitive?.content.orEmpty().ifBlank { tagName }
+        val description = releaseObj["description"]?.jsonPrimitive?.content.orEmpty()
+        val links = releaseObj["_links"] as? JsonObject
+        val releaseUrl = links?.get("self")?.jsonPrimitive?.content
+            ?: "$baseUrl/$projectPath/-/releases"
+
+        val version = tagName.ifBlank { name }.ifBlank {
+            throw IllegalStateException("No tag_name found in GitLab release")
+        }
+        return FetchedRelease(
+            version = version,
+            title = name,
+            changelog = description.take(1500),
+            url = releaseUrl
+        )
+    }
+
+    private fun fetchNpm(packageInput: String): FetchedRelease {
+        val pkg = packageInput
+            .removePrefix("https://www.npmjs.com/package/")
+            .removePrefix("https://npmjs.com/package/")
+            .trim('/')
+        require(pkg.isNotBlank()) { "npm package name cannot be empty" }
+
+        val apiUrl = "https://registry.npmjs.org/$pkg/latest"
+        val body = executeGet(apiUrl, accept = "application/json")
+        val obj = json.parseToJsonElement(body).jsonObject
+
+        val version = obj["version"]?.jsonPrimitive?.content.orEmpty().ifBlank {
+            throw IllegalStateException("No version found for npm package $pkg")
+        }
+        val description = obj["description"]?.jsonPrimitive?.content.orEmpty()
+        val homepage = obj["homepage"]?.jsonPrimitive?.content
+            ?.takeIf { it.startsWith("http") }
+            ?: "https://www.npmjs.com/package/$pkg"
+
+        return FetchedRelease(
+            version = "v$version",
+            title = "$pkg v$version",
+            changelog = description.take(1200),
+            url = homepage
+        )
+    }
+
+    private fun fetchPypi(packageInput: String): FetchedRelease {
+        val pkg = packageInput
+            .removePrefix("https://pypi.org/project/")
+            .trim('/')
+        require(pkg.isNotBlank()) { "PyPI package name cannot be empty" }
+
+        val apiUrl = "https://pypi.org/pypi/$pkg/json"
+        val body = executeGet(apiUrl, accept = "application/json")
+        val root = json.parseToJsonElement(body).jsonObject
+        val info = root["info"]?.jsonObject
+            ?: throw IllegalStateException("Invalid PyPI response for $pkg")
+
+        val version = info["version"]?.jsonPrimitive?.content.orEmpty().ifBlank {
+            throw IllegalStateException("No version found for PyPI package $pkg")
+        }
+        val summary = info["summary"]?.jsonPrimitive?.content.orEmpty()
+        val projectUrl = info["project_url"]?.jsonPrimitive?.content
+            ?.takeIf { it.startsWith("http") }
+            ?: "https://pypi.org/project/$pkg/"
+
+        return FetchedRelease(
+            version = "v$version",
+            title = "$pkg v$version",
+            changelog = summary.take(1200),
+            url = projectUrl
+        )
+    }
+
+    private fun fetchDockerHub(imageInput: String): FetchedRelease {
+        val clean = imageInput
+            .removePrefix("https://hub.docker.com/r/")
+            .removePrefix("https://hub.docker.com/_/")
+            .trim('/')
+        require(clean.isNotBlank()) { "Docker image name cannot be empty" }
+
+        val fullRepo = if (clean.contains("/")) clean else "library/$clean"
+        val apiUrl = "https://hub.docker.com/v2/repositories/$fullRepo/tags?page_size=15&ordering=last_updated"
+        val body = executeGet(apiUrl, accept = "application/json")
+        val results = json.parseToJsonElement(body).jsonObject["results"]?.jsonArray
+            ?: throw IllegalStateException("No tags found for Docker image $fullRepo")
+
+        val tagObjects = results.mapNotNull { it as? JsonObject }
+        val chosen = tagObjects.firstOrNull {
+            val tag = it["name"]?.jsonPrimitive?.content.orEmpty()
+            tag.isNotBlank() && tag != "latest" && tag != "edge" && tag != "nightly" && !tag.endsWith(".sig")
+        } ?: tagObjects.firstOrNull()
+            ?: throw IllegalStateException("No usable tags found for $fullRepo")
+
+        val tagName = chosen["name"]?.jsonPrimitive?.content.orEmpty().ifBlank {
+            throw IllegalStateException("Tag name missing for $fullRepo")
+        }
+        val lastUpdated = chosen["last_updated"]?.jsonPrimitive?.content.orEmpty()
+        val webUrl = if (fullRepo.startsWith("library/")) {
+            "https://hub.docker.com/_/${fullRepo.removePrefix("library/")}/tags"
+        } else {
+            "https://hub.docker.com/r/$fullRepo/tags"
+        }
+
+        return FetchedRelease(
+            version = tagName,
+            title = "$fullRepo:$tagName",
+            changelog = if (lastUpdated.isNotBlank()) "Updated: $lastUpdated" else "Latest Docker Hub tag",
+            url = webUrl
         )
     }
 
