@@ -4,17 +4,45 @@ import com.dor2500.updatepulse.data.model.ServiceCategory
 import com.dor2500.updatepulse.data.model.SourceType
 
 object CuratedCatalog {
+    private fun gh(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        repo: String,
+        color: Long,
+        subscribed: Boolean = false,
+        preRelease: Boolean = false
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.GITHUB_RELEASES,
+        sourceUrlOrRepo = repo,
+        includePreReleases = preRelease,
+        accentColorHex = color,
+        isSubscribed = subscribed
+    )
+
+    private fun rss(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        url: String,
+        color: Long,
+        subscribed: Boolean = false
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.RSS_ATOM,
+        sourceUrlOrRepo = url,
+        accentColorHex = color,
+        isSubscribed = subscribed
+    )
+
     val defaultServices: List<TrackedServiceEntity> = listOf(
         // 1. Google & Pixel
-        TrackedServiceEntity(
-            id = "google_android_beta",
-            name = "Android / Pixel Beta Program",
-            category = ServiceCategory.GOOGLE_PIXEL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://android-developers.googleblog.com/feeds/posts/default",
-            accentColorHex = 0xFF34D399L,
-            isSubscribed = true
-        ),
+        rss("google_android_beta", "Android / Pixel Beta Program", ServiceCategory.GOOGLE_PIXEL, "https://android-developers.googleblog.com/feeds/posts/default", 0xFF34D399L, subscribed = true),
         TrackedServiceEntity(
             id = "google_pixel_ota",
             name = "Google Pixel Factory Images & OTA",
@@ -24,306 +52,182 @@ object CuratedCatalog {
             regexPattern = """(\d+\.\d+\.\d+\s*\([A-Z0-9.]+\))""",
             accentColorHex = 0xFF60A5FAL
         ),
-        TrackedServiceEntity(
-            id = "google_play_services",
-            name = "Google Play Services",
-            category = ServiceCategory.GOOGLE_PIXEL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/google-inc/google-play-services/feed/",
-            accentColorHex = 0xFF38BDF8L
-        ),
-        TrackedServiceEntity(
-            id = "google_pixel_camera",
-            name = "Pixel Camera (Google Camera)",
-            category = ServiceCategory.GOOGLE_PIXEL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/google-inc/camera/feed/",
-            accentColorHex = 0xFF818CF8L
-        ),
-        TrackedServiceEntity(
-            id = "google_webview",
-            name = "Android System WebView",
-            category = ServiceCategory.GOOGLE_PIXEL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/google-inc/android-system-webview/feed/",
-            accentColorHex = 0xFF2DD4BFL
-        ),
-        TrackedServiceEntity(
-            id = "google_pixel_watch",
-            name = "Pixel Watch App Updates",
-            category = ServiceCategory.GOOGLE_PIXEL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/google-inc/google-pixel-watch/feed/",
-            accentColorHex = 0xFFA78BFAL
-        ),
+        rss("google_play_services", "Google Play Services", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/google-play-services/feed/", 0xFF38BDF8L),
+        rss("google_pixel_camera", "Pixel Camera (Google Camera)", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/camera/feed/", 0xFF818CF8L),
+        rss("google_webview", "Android System WebView", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/android-system-webview/feed/", 0xFF2DD4BFL),
+        rss("google_pixel_watch", "Pixel Watch App", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/google-pixel-watch/feed/", 0xFFA78BFAL),
+        rss("google_app", "Google App Beta", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/google-search/feed/", 0xFF4285F4L),
+        rss("google_messages", "Google Messages", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/messenger-google-inc/feed/", 0xFF3B82F6L),
+        rss("google_gboard", "Gboard", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/gboard/feed/", 0xFF60A5FAL),
+        rss("google_photos", "Google Photos", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/photos/feed/", 0xFFFBBF24L),
+        rss("google_maps", "Google Maps", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/maps/feed/", 0xFF22C55EL),
+        rss("google_phone", "Google Phone (Dialer)", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/google-phone/feed/", 0xFF10B981L),
+        rss("google_android_auto", "Android Auto", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/android-auto/feed/", 0xFF38BDF8L),
+        rss("google_home", "Google Home", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/google-home/feed/", 0xFF60A5FAL),
+        rss("google_pixel_launcher", "Pixel Launcher", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/pixel-launcher/feed/", 0xFF34D399L),
+        rss("google_pixel_buds", "Pixel Buds", ServiceCategory.GOOGLE_PIXEL, "https://www.apkmirror.com/apk/google-inc/google-pixel-buds/feed/", 0xFFA78BFAL),
+        rss("google_security_bulletin", "Android Security Bulletin", ServiceCategory.GOOGLE_PIXEL, "https://source.android.com/docs/security/bulletin/rss.xml", 0xFFEF4444L),
 
         // 2. Messaging & Social
-        TrackedServiceEntity(
-            id = "msg_whatsapp_beta",
-            name = "WhatsApp Beta",
-            category = ServiceCategory.MESSAGING_SOCIAL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/whatsapp-inc/whatsapp/feed/",
-            accentColorHex = 0xFF22C55EL
-        ),
-        TrackedServiceEntity(
-            id = "msg_whatsapp_stable",
-            name = "WhatsApp Business / Stable",
-            category = ServiceCategory.MESSAGING_SOCIAL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/whatsapp-inc/whatsapp-business/feed/",
-            accentColorHex = 0xFF10B981L
-        ),
-        TrackedServiceEntity(
-            id = "msg_telegram",
-            name = "Telegram",
-            category = ServiceCategory.MESSAGING_SOCIAL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/telegram-fz-llc/telegram/feed/",
-            accentColorHex = 0xFF38BDF8L
-        ),
-        TrackedServiceEntity(
-            id = "msg_discord",
-            name = "Discord",
-            category = ServiceCategory.MESSAGING_SOCIAL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/discord-inc/discord-chat-for-gamers/feed/",
-            accentColorHex = 0xFF818CF8L
-        ),
-        TrackedServiceEntity(
-            id = "msg_signal",
-            name = "Signal Android",
-            category = ServiceCategory.MESSAGING_SOCIAL,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "signalapp/Signal-Android",
-            accentColorHex = 0xFF3B82F6L
-        ),
-        TrackedServiceEntity(
-            id = "msg_instagram",
-            name = "Instagram Beta",
-            category = ServiceCategory.MESSAGING_SOCIAL,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/instagram/instagram-instagram/feed/",
-            accentColorHex = 0xFFF472B6L
-        ),
+        rss("msg_whatsapp_beta", "WhatsApp Messenger", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/whatsapp-inc/whatsapp/feed/", 0xFF22C55EL),
+        rss("msg_whatsapp_business", "WhatsApp Business", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/whatsapp-inc/whatsapp-business/feed/", 0xFF10B981L),
+        rss("msg_telegram", "Telegram", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/telegram-fz-llc/telegram/feed/", 0xFF38BDF8L),
+        rss("msg_telegram_x", "Telegram X", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/telegram-fz-llc/telegram-x/feed/", 0xFF0EA5E9L),
+        rss("msg_discord", "Discord", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/discord-inc/discord-chat-for-gamers/feed/", 0xFF818CF8L),
+        gh("msg_signal", "Signal Android", ServiceCategory.MESSAGING_SOCIAL, "signalapp/Signal-Android", 0xFF3B82F6L),
+        rss("msg_instagram", "Instagram", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/instagram/instagram-instagram/feed/", 0xFFF472B6L),
+        rss("msg_threads", "Threads", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/instagram/threads-an-instagram-app/feed/", 0xFFE2E8F0L),
+        rss("msg_facebook", "Facebook", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/facebook-2/facebook/feed/", 0xFF2563EBL),
+        rss("msg_messenger", "Facebook Messenger", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/facebook-2/messenger/feed/", 0xFF60A5FAL),
+        rss("msg_x_twitter", "X (Twitter)", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/x-corp/twitter/feed/", 0xFF94A3B8L),
+        rss("msg_reddit", "Reddit", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/redditinc/reddit/feed/", 0xFFF97316L),
+        rss("msg_slack", "Slack", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/slack-technologies-inc/slack/feed/", 0xFFA855F7L),
+        rss("msg_teams", "Microsoft Teams", ServiceCategory.MESSAGING_SOCIAL, "https://www.apkmirror.com/apk/microsoft-corporation/microsoft-teams/feed/", 0xFF6366F1L),
+        gh("msg_element", "Element (Matrix)", ServiceCategory.MESSAGING_SOCIAL, "element-hq/element-android", 0xFF10B981L),
+        gh("msg_session", "Session Private Messenger", ServiceCategory.MESSAGING_SOCIAL, "oxen-io/session-android", 0xFF34D399L),
 
         // 3. Browsers
-        TrackedServiceEntity(
-            id = "browser_chrome_beta",
-            name = "Google Chrome Beta",
-            category = ServiceCategory.BROWSERS,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/google-inc/chrome-beta/feed/",
-            accentColorHex = 0xFFFBBF24L
-        ),
-        TrackedServiceEntity(
-            id = "browser_firefox_nightly",
-            name = "Firefox Nightly",
-            category = ServiceCategory.BROWSERS,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/mozilla/firefox-nightly-for-developers/feed/",
-            accentColorHex = 0xFFFB923CL
-        ),
-        TrackedServiceEntity(
-            id = "browser_brave",
-            name = "Brave Browser",
-            category = ServiceCategory.BROWSERS,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "brave/brave-browser",
-            accentColorHex = 0xFFF97316L
-        ),
-        TrackedServiceEntity(
-            id = "browser_vivaldi",
-            name = "Vivaldi Browser",
-            category = ServiceCategory.BROWSERS,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/vivaldi-technologies/vivaldi-browser-beta/feed/",
-            accentColorHex = 0xFFEF4444L
-        ),
+        rss("browser_chrome_beta", "Google Chrome Beta", ServiceCategory.BROWSERS, "https://www.apkmirror.com/apk/google-inc/chrome-beta/feed/", 0xFFFBBF24L),
+        rss("browser_chrome_canary", "Google Chrome Canary", ServiceCategory.BROWSERS, "https://www.apkmirror.com/apk/google-inc/chrome-canary/feed/", 0xFFF59E0BL),
+        rss("browser_firefox_nightly", "Firefox Nightly", ServiceCategory.BROWSERS, "https://www.apkmirror.com/apk/mozilla/firefox-nightly-for-developers/feed/", 0xFFFB923CL),
+        rss("browser_firefox", "Firefox Stable", ServiceCategory.BROWSERS, "https://www.apkmirror.com/apk/mozilla/firefox/feed/", 0xFFF97316L),
+        gh("browser_brave", "Brave Browser", ServiceCategory.BROWSERS, "brave/brave-browser", 0xFFF97316L),
+        rss("browser_vivaldi", "Vivaldi Browser Beta", ServiceCategory.BROWSERS, "https://www.apkmirror.com/apk/vivaldi-technologies/vivaldi-browser-beta/feed/", 0xFFEF4444L),
+        rss("browser_edge_canary", "Microsoft Edge Canary", ServiceCategory.BROWSERS, "https://www.apkmirror.com/apk/microsoft-corporation/microsoft-edge-canary/feed/", 0xFF0EA5E9L),
+        rss("browser_ddg", "DuckDuckGo Browser", ServiceCategory.BROWSERS, "https://www.apkmirror.com/apk/duckduckgo/duckduckgo-privacy-browser/feed/", 0xFFFB923CL),
+        gh("browser_cromite", "Cromite", ServiceCategory.BROWSERS, "uazo/cromite", 0xFF60A5FAL),
+        gh("browser_mullvad", "Mullvad Browser", ServiceCategory.BROWSERS, "mullvad/mullvad-browser", 0xFF22C55EL),
 
         // 4. Android Power-User & Modding
-        TrackedServiceEntity(
-            id = "power_magisk",
-            name = "Magisk",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "topjohnwu/Magisk",
-            accentColorHex = 0xFF14B8A6L,
-            isSubscribed = true
-        ),
-        TrackedServiceEntity(
-            id = "power_kernelsu",
-            name = "KernelSU",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "tiann/KernelSU",
-            accentColorHex = 0xFF06B6D4L
-        ),
-        TrackedServiceEntity(
-            id = "power_shizuku",
-            name = "Shizuku",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "RikkaApps/Shizuku",
-            accentColorHex = 0xFF6366F1L
-        ),
-        TrackedServiceEntity(
-            id = "power_revanced",
-            name = "ReVanced Manager",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "ReVanced/revanced-manager",
-            accentColorHex = 0xFF8B5CF6L
-        ),
-        TrackedServiceEntity(
-            id = "power_obtainium",
-            name = "Obtainium",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "ImranR98/Obtainium",
-            accentColorHex = 0xFFA855F7L,
-            isSubscribed = true
-        ),
-        TrackedServiceEntity(
-            id = "power_termux",
-            name = "Termux",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "termux/termux-app",
-            accentColorHex = 0xFF64748BL
-        ),
-        TrackedServiceEntity(
-            id = "power_adaway",
-            name = "AdAway",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "AdAway/AdAway",
-            accentColorHex = 0xFFEF4444L
-        ),
-        TrackedServiceEntity(
-            id = "power_fdroid",
-            name = "F-Droid Client",
-            category = ServiceCategory.ANDROID_POWER,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://gitlab.com/fdroid/fdroidclient/-/tags?format=atom",
-            accentColorHex = 0xFF3B82F6L
-        ),
+        gh("power_magisk", "Magisk", ServiceCategory.ANDROID_POWER, "topjohnwu/Magisk", 0xFF14B8A6L, subscribed = true),
+        gh("power_kernelsu", "KernelSU", ServiceCategory.ANDROID_POWER, "tiann/KernelSU", 0xFF06B6D4L),
+        gh("power_apatch", "APatch", ServiceCategory.ANDROID_POWER, "bmax121/APatch", 0xFF22D3EEL),
+        gh("power_lsposed", "LSPosed", ServiceCategory.ANDROID_POWER, "LSPosed/LSPosed", 0xFFA855F7L),
+        gh("power_shizuku", "Shizuku", ServiceCategory.ANDROID_POWER, "RikkaApps/Shizuku", 0xFF6366F1L),
+        gh("power_revanced", "ReVanced Manager", ServiceCategory.ANDROID_POWER, "ReVanced/revanced-manager", 0xFF8B5CF6L),
+        gh("power_obtainium", "Obtainium", ServiceCategory.ANDROID_POWER, "ImranR98/Obtainium", 0xFFA855F7L, subscribed = true),
+        gh("power_termux", "Termux", ServiceCategory.ANDROID_POWER, "termux/termux-app", 0xFF64748BL),
+        gh("power_adaway", "AdAway", ServiceCategory.ANDROID_POWER, "AdAway/AdAway", 0xFFEF4444L),
+        rss("power_fdroid", "F-Droid Client", ServiceCategory.ANDROID_POWER, "https://gitlab.com/fdroid/fdroidclient/-/tags?format=atom", 0xFF3B82F6L),
+        gh("power_droidify", "Droid-ify (F-Droid Client)", ServiceCategory.ANDROID_POWER, "Droid-ify/client", 0xFF38BDF8L),
+        gh("power_neostore", "Neo Store (F-Droid Client)", ServiceCategory.ANDROID_POWER, "NeoApplications/Neo-Store", 0xFF818CF8L),
+        gh("power_sdmaid_se", "SD Maid SE", ServiceCategory.ANDROID_POWER, "d4rken-org/sdmaid-se", 0xFF34D399L),
+        gh("power_appmanager", "App Manager", ServiceCategory.ANDROID_POWER, "MuntashirAkon/AppManager", 0xFF60A5FAL),
+        gh("power_canta", "Canta (Universal Debloater)", ServiceCategory.ANDROID_POWER, "samolego/Canta", 0xFFF472B6L),
+        gh("power_hail", "Hail (App Freezer)", ServiceCategory.ANDROID_POWER, "aistra0528/Hail", 0xFF38BDF8L),
+        gh("power_lawnchair", "Lawnchair Launcher", ServiceCategory.ANDROID_POWER, "LawnchairLauncher/lawnchair", 0xFF22C55EL),
+        gh("power_seal", "Seal (Video Downloader)", ServiceCategory.ANDROID_POWER, "JunkFood02/Seal", 0xFFA78BFAL),
+        gh("power_ytdlnis", "YTDLnis", ServiceCategory.ANDROID_POWER, "deniscerri/ytdlnis", 0xFF60A5FAL),
+        gh("power_breezy_weather", "Breezy Weather", ServiceCategory.ANDROID_POWER, "breezy-weather/breezy-weather", 0xFFFBBF24L),
+        gh("power_local_send", "LocalSend", ServiceCategory.ANDROID_POWER, "localsend/localsend", 0xFF14B8A6L),
 
-        // 5. PC, OS & Dev Tools
-        TrackedServiceEntity(
-            id = "dev_win11_insider",
-            name = "Windows 11 Insider Preview",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://blogs.windows.com/windows-insider/feed/",
-            accentColorHex = 0xFF0EA5E9L
-        ),
-        TrackedServiceEntity(
-            id = "dev_powertoys",
-            name = "Microsoft PowerToys",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "microsoft/PowerToys",
-            accentColorHex = 0xFF38BDF8L,
-            isSubscribed = true
-        ),
-        TrackedServiceEntity(
-            id = "dev_vscode",
-            name = "Visual Studio Code",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "microsoft/vscode",
-            accentColorHex = 0xFF2563EBL
-        ),
-        TrackedServiceEntity(
-            id = "dev_docker",
-            name = "Docker Desktop",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://docs.docker.com/desktop/release-notes/index.xml",
-            accentColorHex = 0xFF0284C7L
-        ),
-        TrackedServiceEntity(
-            id = "dev_ollama",
-            name = "Ollama",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "ollama/ollama",
-            accentColorHex = 0xFFE2E8F0L
-        ),
-        TrackedServiceEntity(
-            id = "dev_home_assistant",
-            name = "Home Assistant Core",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "home-assistant/core",
-            accentColorHex = 0xFF38BDF8L
-        ),
-        TrackedServiceEntity(
-            id = "dev_pihole",
-            name = "Pi-hole",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "pi-hole/pi-hole",
-            accentColorHex = 0xFFF43F5EL
-        ),
-        TrackedServiceEntity(
-            id = "dev_plex",
-            name = "Plex Media Server",
-            category = ServiceCategory.PC_DEV,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://forums.plex.tv/c/announcements/5.rss",
-            accentColorHex = 0xFFF59E0BL
-        ),
+        // 5. AI & LLMs
+        gh("ai_ollama", "Ollama", ServiceCategory.AI_LLM, "ollama/ollama", 0xFFE2E8F0L),
+        gh("ai_open_webui", "Open WebUI", ServiceCategory.AI_LLM, "open-webui/open-webui", 0xFF38BDF8L),
+        gh("ai_llamacpp", "llama.cpp", ServiceCategory.AI_LLM, "ggerganov/llama.cpp", 0xFFF97316L),
+        gh("ai_comfyui", "ComfyUI", ServiceCategory.AI_LLM, "comfyanonymous/ComfyUI", 0xFF60A5FAL),
+        gh("ai_sd_webui", "Stable Diffusion WebUI", ServiceCategory.AI_LLM, "AUTOMATIC1111/stable-diffusion-webui", 0xFFA855F7L),
+        gh("ai_jan", "Jan (Local AI)", ServiceCategory.AI_LLM, "janhq/jan", 0xFF34D399L),
+        gh("ai_anythingllm", "AnythingLLM", ServiceCategory.AI_LLM, "Mintplex-Labs/anything-llm", 0xFF818CF8L),
+        gh("ai_vllm", "vLLM", ServiceCategory.AI_LLM, "vllm-project/vllm", 0xFFFBBF24L),
+        gh("ai_localai", "LocalAI", ServiceCategory.AI_LLM, "mudler/LocalAI", 0xFF22C55EL),
+        gh("ai_langchain", "LangChain", ServiceCategory.AI_LLM, "langchain-ai/langchain", 0xFF10B981L),
+        gh("ai_continue", "Continue (AI Code Assistant)", ServiceCategory.AI_LLM, "continuedev/continue", 0xFF6366F1L),
+        gh("ai_cline", "Cline (VS Code AI Agent)", ServiceCategory.AI_LLM, "cline/cline", 0xFFA78BFAL),
+        gh("ai_dify", "Dify", ServiceCategory.AI_LLM, "langgenius/dify", 0xFF3B82F6L),
+        gh("ai_whispercpp", "whisper.cpp", ServiceCategory.AI_LLM, "ggerganov/whisper.cpp", 0xFF94A3B8L),
 
-        // 6. Smart Home & Media
-        TrackedServiceEntity(
-            id = "media_stremio",
-            name = "Stremio",
-            category = ServiceCategory.SMART_HOME_MEDIA,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "Stremio/stremio-shell",
-            accentColorHex = 0xFF8B5CF6L
-        ),
-        TrackedServiceEntity(
-            id = "media_vlc",
-            name = "VLC for Android",
-            category = ServiceCategory.SMART_HOME_MEDIA,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/videolabs/vlc/feed/",
-            accentColorHex = 0xFFF97316L
-        ),
-        TrackedServiceEntity(
-            id = "media_kodi",
-            name = "Kodi",
-            category = ServiceCategory.SMART_HOME_MEDIA,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "xbmc/xbmc",
-            accentColorHex = 0xFF0EA5E9L
-        ),
-        TrackedServiceEntity(
-            id = "media_jellyfin",
-            name = "Jellyfin",
-            category = ServiceCategory.SMART_HOME_MEDIA,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "jellyfin/jellyfin",
-            accentColorHex = 0xFFA855F7L
-        ),
-        TrackedServiceEntity(
-            id = "media_tailscale",
-            name = "Tailscale",
-            category = ServiceCategory.SMART_HOME_MEDIA,
-            sourceType = SourceType.GITHUB_RELEASES,
-            sourceUrlOrRepo = "tailscale/tailscale",
-            accentColorHex = 0xFF60A5FAL
-        ),
-        TrackedServiceEntity(
-            id = "media_wireguard",
-            name = "WireGuard",
-            category = ServiceCategory.SMART_HOME_MEDIA,
-            sourceType = SourceType.RSS_ATOM,
-            sourceUrlOrRepo = "https://www.apkmirror.com/apk/wireguard-development-team/wireguard/feed/",
-            accentColorHex = 0xFFDC2626L
-        )
+        // 6. PC, OS & Dev Tools
+        rss("dev_win11_insider", "Windows 11 Insider Preview", ServiceCategory.PC_DEV, "https://blogs.windows.com/windows-insider/feed/", 0xFF0EA5E9L),
+        gh("dev_powertoys", "Microsoft PowerToys", ServiceCategory.PC_DEV, "microsoft/PowerToys", 0xFF38BDF8L, subscribed = true),
+        gh("dev_vscode", "Visual Studio Code", ServiceCategory.PC_DEV, "microsoft/vscode", 0xFF2563EBL),
+        gh("dev_neovim", "Neovim", ServiceCategory.PC_DEV, "neovim/neovim", 0xFF22C55EL),
+        rss("dev_docker", "Docker Desktop", ServiceCategory.PC_DEV, "https://docs.docker.com/desktop/release-notes/index.xml", 0xFF0284C7L),
+        gh("dev_docker_compose", "Docker Compose", ServiceCategory.PC_DEV, "docker/compose", 0xFF38BDF8L),
+        gh("dev_kubernetes", "Kubernetes", ServiceCategory.PC_DEV, "kubernetes/kubernetes", 0xFF3B82F6L),
+        gh("dev_terraform", "Terraform", ServiceCategory.PC_DEV, "hashicorp/terraform", 0xFF8B5CF6L),
+        gh("dev_nodejs", "Node.js", ServiceCategory.PC_DEV, "nodejs/node", 0xFF22C55EL),
+        gh("dev_rust", "Rust", ServiceCategory.PC_DEV, "rust-lang/rust", 0xFFF97316L),
+        gh("dev_golang", "Go (Golang)", ServiceCategory.PC_DEV, "golang/go", 0xFF06B6D4L),
+        gh("dev_git_windows", "Git for Windows", ServiceCategory.PC_DEV, "git-for-windows/git", 0xFFEF4444L),
+        gh("dev_winget", "WinGet CLI", ServiceCategory.PC_DEV, "microsoft/winget-cli", 0xFF60A5FAL),
+        gh("dev_windows_terminal", "Windows Terminal", ServiceCategory.PC_DEV, "microsoft/terminal", 0xFF38BDF8L),
+        gh("dev_rufus", "Rufus", ServiceCategory.PC_DEV, "pbatard/rufus", 0xFF3B82F6L),
+        gh("dev_ventoy", "Ventoy", ServiceCategory.PC_DEV, "ventoy/Ventoy", 0xFF10B981L),
+        gh("dev_sharex", "ShareX", ServiceCategory.PC_DEV, "ShareX/ShareX", 0xFF60A5FAL),
+        gh("dev_fancontrol", "FanControl", ServiceCategory.PC_DEV, "Rem0o/FanControl.Releases", 0xFF34D399L),
+        gh("dev_bruno", "Bruno (API Client)", ServiceCategory.PC_DEV, "usebruno/bruno", 0xFFFBBF24L),
+        gh("dev_zed", "Zed Editor", ServiceCategory.PC_DEV, "zed-industries/zed", 0xFF818CF8L),
+        gh("dev_obsidian_releases", "Obsidian", ServiceCategory.PC_DEV, "obsidianmd/obsidian-releases", 0xFFA855F7L),
+
+        // 7. Smart Home & Media
+        gh("media_home_assistant", "Home Assistant Core", ServiceCategory.SMART_HOME_MEDIA, "home-assistant/core", 0xFF38BDF8L),
+        gh("media_ha_android", "Home Assistant Android", ServiceCategory.SMART_HOME_MEDIA, "home-assistant/android", 0xFF0EA5E9L),
+        gh("media_zigbee2mqtt", "Zigbee2MQTT", ServiceCategory.SMART_HOME_MEDIA, "Koenkk/zigbee2mqtt", 0xFFFBBF24L),
+        gh("media_esphome", "ESPHome", ServiceCategory.SMART_HOME_MEDIA, "esphome/esphome", 0xFF94A3B8L),
+        gh("media_frigate", "Frigate NVR", ServiceCategory.SMART_HOME_MEDIA, "blakeblackshear/frigate", 0xFF3B82F6L),
+        gh("media_scrypted", "Scrypted", ServiceCategory.SMART_HOME_MEDIA, "koush/scrypted", 0xFF8B5CF6L),
+        gh("media_stremio", "Stremio", ServiceCategory.SMART_HOME_MEDIA, "Stremio/stremio-shell", 0xFF8B5CF6L),
+        rss("media_vlc", "VLC for Android", ServiceCategory.SMART_HOME_MEDIA, "https://www.apkmirror.com/apk/videolabs/vlc/feed/", 0xFFF97316L),
+        gh("media_kodi", "Kodi", ServiceCategory.SMART_HOME_MEDIA, "xbmc/xbmc", 0xFF0EA5E9L),
+        gh("media_jellyfin", "Jellyfin Server", ServiceCategory.SMART_HOME_MEDIA, "jellyfin/jellyfin", 0xFFA855F7L),
+        gh("media_jellyfin_android", "Jellyfin Android", ServiceCategory.SMART_HOME_MEDIA, "jellyfin/jellyfin-android", 0xFFC084FCL),
+        rss("media_plex", "Plex Media Server", ServiceCategory.SMART_HOME_MEDIA, "https://forums.plex.tv/c/announcements/5.rss", 0xFFF59E0BL),
+        gh("media_newpipe", "NewPipe", ServiceCategory.SMART_HOME_MEDIA, "TeamNewPipe/NewPipe", 0xFFEF4444L),
+        gh("media_tubular", "Tubular", ServiceCategory.SMART_HOME_MEDIA, "polymorphicshade/Tubular", 0xFFF43F5EL),
+        gh("media_spotube", "Spotube", ServiceCategory.SMART_HOME_MEDIA, "KRTirtho/spotube", 0xFF22C55EL),
+        gh("media_mpv_android", "mpv-android", ServiceCategory.SMART_HOME_MEDIA, "mpv-android/mpv-android", 0xFFA78BFAL),
+        gh("media_audiobookshelf", "Audiobookshelf", ServiceCategory.SMART_HOME_MEDIA, "advplyr/audiobookshelf", 0xFFFBBF24L),
+
+        // 8. Security, Privacy & Networking
+        gh("sec_tailscale", "Tailscale", ServiceCategory.SECURITY_PRIVACY, "tailscale/tailscale", 0xFF60A5FAL),
+        rss("sec_wireguard", "WireGuard", ServiceCategory.SECURITY_PRIVACY, "https://www.apkmirror.com/apk/wireguard-development-team/wireguard/feed/", 0xFFDC2626L),
+        gh("sec_proton_vpn", "Proton VPN Android", ServiceCategory.SECURITY_PRIVACY, "ProtonVPN/android-app", 0xFF8B5CF6L),
+        gh("sec_mullvad_vpn", "Mullvad VPN", ServiceCategory.SECURITY_PRIVACY, "mullvad/mullvadvpn-app", 0xFF22C55EL),
+        gh("sec_bitwarden", "Bitwarden Android", ServiceCategory.SECURITY_PRIVACY, "bitwarden/android", 0xFF2563EBL),
+        gh("sec_vaultwarden", "Vaultwarden", ServiceCategory.SECURITY_PRIVACY, "dani-garcia/vaultwarden", 0xFF3B82F6L),
+        gh("sec_keepassdx", "KeePassDX", ServiceCategory.SECURITY_PRIVACY, "Kunzisoft/KeePassDX", 0xFF10B981L),
+        gh("sec_aegis", "Aegis Authenticator", ServiceCategory.SECURITY_PRIVACY, "beemdevelopment/Aegis", 0xFF06B6D4L),
+        gh("sec_ente_auth", "Ente Auth", ServiceCategory.SECURITY_PRIVACY, "ente-io/ente", 0xFF14B8A6L),
+        gh("sec_adguard_home", "AdGuard Home", ServiceCategory.SECURITY_PRIVACY, "AdguardTeam/AdGuardHome", 0xFF22C55EL),
+        gh("sec_pihole", "Pi-hole", ServiceCategory.SECURITY_PRIVACY, "pi-hole/pi-hole", 0xFFF43F5EL),
+        gh("sec_rethinkdns", "RethinkDNS", ServiceCategory.SECURITY_PRIVACY, "celzero/rethink-app", 0xFF818CF8L),
+        gh("sec_netguard", "NetGuard", ServiceCategory.SECURITY_PRIVACY, "M66B/NetGuard", 0xFF38BDF8L),
+        gh("sec_openwrt", "OpenWrt", ServiceCategory.SECURITY_PRIVACY, "openwrt/openwrt", 0xFF0EA5E9L),
+        gh("sec_opnsense", "OPNsense", ServiceCategory.SECURITY_PRIVACY, "opnsense/core", 0xFFF97316L),
+        gh("sec_caddy", "Caddy Server", ServiceCategory.SECURITY_PRIVACY, "caddyserver/caddy", 0xFF22C55EL),
+        gh("sec_npm", "Nginx Proxy Manager", ServiceCategory.SECURITY_PRIVACY, "NginxProxyManager/nginx-proxy-manager", 0xFFF472B6L),
+        gh("sec_traefik", "Traefik", ServiceCategory.SECURITY_PRIVACY, "traefik/traefik", 0xFF06B6D4L),
+        gh("sec_cloudflared", "Cloudflare Tunnel (cloudflared)", ServiceCategory.SECURITY_PRIVACY, "cloudflare/cloudflared", 0xFFF97316L),
+
+        // 9. Self-Hosted & Cloud
+        gh("cloud_nextcloud", "Nextcloud Server", ServiceCategory.SELF_HOSTED, "nextcloud/server", 0xFF0EA5E9L),
+        gh("cloud_immich", "Immich", ServiceCategory.SELF_HOSTED, "immich-app/immich", 0xFF6366F1L),
+        gh("cloud_paperless", "Paperless-ngx", ServiceCategory.SELF_HOSTED, "paperless-ngx/paperless-ngx", 0xFF22C55EL),
+        gh("cloud_syncthing", "Syncthing", ServiceCategory.SELF_HOSTED, "syncthing/syncthing", 0xFF38BDF8L),
+        gh("cloud_portainer", "Portainer", ServiceCategory.SELF_HOSTED, "portainer/portainer", 0xFF0284C7L),
+        gh("cloud_uptime_kuma", "Uptime Kuma", ServiceCategory.SELF_HOSTED, "louislam/uptime-kuma", 0xFF10B981L),
+        gh("cloud_grafana", "Grafana", ServiceCategory.SELF_HOSTED, "grafana/grafana", 0xFFF97316L),
+        gh("cloud_prometheus", "Prometheus", ServiceCategory.SELF_HOSTED, "prometheus/prometheus", 0xFFEF4444L),
+        gh("cloud_gitea", "Gitea", ServiceCategory.SELF_HOSTED, "go-gitea/gitea", 0xFF22C55EL),
+        gh("cloud_mealie", "Mealie", ServiceCategory.SELF_HOSTED, "mealie-recipes/mealie", 0xFFF59E0BL),
+        gh("cloud_freshrss", "FreshRSS", ServiceCategory.SELF_HOSTED, "FreshRSS/FreshRSS", 0xFF3B82F6L),
+        gh("cloud_navidrome", "Navidrome", ServiceCategory.SELF_HOSTED, "navidrome/navidrome", 0xFF60A5FAL),
+        gh("cloud_n8n", "n8n Workflow Automation", ServiceCategory.SELF_HOSTED, "n8n-io/n8n", 0xFFF43F5EL),
+        gh("cloud_homarr", "Homarr Dashboard", ServiceCategory.SELF_HOSTED, "homarr-labs/homarr", 0xFFA855F7L),
+
+        // 10. Gaming & Emulation
+        gh("game_retroarch", "RetroArch", ServiceCategory.GAMING_EMULATION, "libretro/RetroArch", 0xFF94A3B8L),
+        gh("game_dolphin", "Dolphin Emulator", ServiceCategory.GAMING_EMULATION, "dolphin-emu/dolphin", 0xFF38BDF8L),
+        gh("game_ppsspp", "PPSSPP", ServiceCategory.GAMING_EMULATION, "hrydgard/ppsspp", 0xFF60A5FAL),
+        gh("game_duckstation", "DuckStation", ServiceCategory.GAMING_EMULATION, "stenzek/duckstation", 0xFFFBBF24L),
+        gh("game_pcsx2", "PCSX2", ServiceCategory.GAMING_EMULATION, "PCSX2/pcsx2", 0xFF3B82F6L),
+        gh("game_rpcs3", "RPCS3", ServiceCategory.GAMING_EMULATION, "RPCS3/rpcs3", 0xFF818CF8L),
+        gh("game_moonlight", "Moonlight Android", ServiceCategory.GAMING_EMULATION, "moonlight-stream/moonlight-android", 0xFF22C55EL),
+        gh("game_sunshine", "Sunshine (Game Stream Host)", ServiceCategory.GAMING_EMULATION, "LizardByte/Sunshine", 0xFFF97316L),
+        gh("game_playnite", "Playnite", ServiceCategory.GAMING_EMULATION, "JosefNemec/Playnite", 0xFF6366F1L),
+        gh("game_heroic", "Heroic Games Launcher", ServiceCategory.GAMING_EMULATION, "Heroic-Games-Launcher/HeroicGamesLauncher", 0xFF06B6D4L),
+        gh("game_lutris", "Lutris", ServiceCategory.GAMING_EMULATION, "lutris/lutris", 0xFFF59E0BL),
+        gh("game_prism", "Prism Launcher", ServiceCategory.GAMING_EMULATION, "PrismLauncher/PrismLauncher", 0xFF34D399L)
     )
 }

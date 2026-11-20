@@ -10,8 +10,12 @@ enum class ServiceCategory(@StringRes val labelRes: Int) {
     MESSAGING_SOCIAL(R.string.cat_messaging_social),
     BROWSERS(R.string.cat_browsers),
     ANDROID_POWER(R.string.cat_android_power),
+    AI_LLM(R.string.cat_ai_llm),
     PC_DEV(R.string.cat_pc_dev),
     SMART_HOME_MEDIA(R.string.cat_smart_home_media),
+    SECURITY_PRIVACY(R.string.cat_security_privacy),
+    SELF_HOSTED(R.string.cat_self_hosted),
+    GAMING_EMULATION(R.string.cat_gaming_emulation),
     CUSTOM(R.string.cat_custom)
 }
 
