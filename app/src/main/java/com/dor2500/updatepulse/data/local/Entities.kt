@@ -3,6 +3,7 @@ package com.dor2500.updatepulse.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.dor2500.updatepulse.data.model.ServiceCategory
+import com.dor2500.updatepulse.data.model.ServiceRegion
 import com.dor2500.updatepulse.data.model.SourceType
 import kotlinx.serialization.Serializable
 
@@ -14,6 +15,7 @@ data class TrackedServiceEntity(
     val category: ServiceCategory,
     val sourceType: SourceType,
     val sourceUrlOrRepo: String,
+    val region: ServiceRegion = ServiceRegion.GLOBAL,
     val includePreReleases: Boolean = false,
     val jsonKey: String? = null,
     val regexPattern: String? = null,

@@ -26,6 +26,16 @@
     <string name="catalog_title">קטלוג שירותים</string>
     <string name="catalog_search_hint">חפש שירותים, קטגוריות…</string>
     <string name="catalog_all_categories">הכל</string>
+    <string name="catalog_all_regions">כל המדינות</string>
+    <string name="catalog_count">%1$d שירותים</string>
+
+    <!-- Regions -->
+    <string name="region_global">גלובלי</string>
+    <string name="region_israel">ישראל</string>
+    <string name="region_usa">ארה\"ב</string>
+    <string name="region_europe">אירופה</string>
+    <string name="region_uk">בריטניה</string>
+    <string name="region_asia">אסיה</string>
     <string name="catalog_tracking_on">במעקב</string>
     <string name="catalog_track">עקוב</string>
     <string name="catalog_latest_version">גרסה אחרונה: %1$s</string>

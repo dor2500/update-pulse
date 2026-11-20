@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import com.dor2500.updatepulse.R
 import com.dor2500.updatepulse.data.local.TrackedServiceEntity
 import com.dor2500.updatepulse.data.model.ServiceCategory
+import com.dor2500.updatepulse.data.model.ServiceRegion
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,11 +59,13 @@ fun CatalogScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<ServiceCategory?>(null) }
+    var selectedRegion by remember { mutableStateOf<ServiceRegion?>(null) }
 
-    val catalogServices = remember(services, searchQuery, selectedCategory) {
+    val catalogServices = remember(services, searchQuery, selectedCategory, selectedRegion) {
         services
             .filter { !it.isCustom }
             .filter { selectedCategory == null || it.category == selectedCategory }
+            .filter { selectedRegion == null || it.region == selectedRegion }
             .filter {
                 searchQuery.isBlank() ||
                     it.name.contains(searchQuery, ignoreCase = true) ||
@@ -76,7 +79,15 @@ fun CatalogScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text(stringResource(R.string.catalog_title)) }
+            title = { Text(stringResource(R.string.catalog_title)) },
+            actions = {
+                Text(
+                    text = stringResource(R.string.catalog_count, catalogServices.size),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+            }
         )
 
         OutlinedTextField(
@@ -119,6 +130,29 @@ fun CatalogScreen(
                         selectedCategory = if (selectedCategory == category) null else category
                     },
                     label = { Text(stringResource(category.labelRes)) }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FilterChip(
+                selected = selectedRegion == null,
+                onClick = { selectedRegion = null },
+                label = { Text(stringResource(R.string.catalog_all_regions)) }
+            )
+            ServiceRegion.entries.forEach { region ->
+                FilterChip(
+                    selected = selectedRegion == region,
+                    onClick = {
+                        selectedRegion = if (selectedRegion == region) null else region
+                    },
+                    label = { Text(stringResource(region.labelRes)) }
                 )
             }
         }
@@ -198,6 +232,19 @@ private fun CatalogServiceCard(
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                         )
+                    }
+                    if (service.region != ServiceRegion.GLOBAL) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                text = stringResource(service.region.labelRes),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
                     }
                     Text(
                         text = service.lastKnownVersion?.let {

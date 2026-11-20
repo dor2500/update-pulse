@@ -20,6 +20,16 @@ enum class ServiceCategory(@StringRes val labelRes: Int) {
 }
 
 @Serializable
+enum class ServiceRegion(@StringRes val labelRes: Int) {
+    GLOBAL(R.string.region_global),
+    ISRAEL(R.string.region_israel),
+    USA(R.string.region_usa),
+    EUROPE(R.string.region_europe),
+    UK(R.string.region_uk),
+    ASIA(R.string.region_asia)
+}
+
+@Serializable
 enum class SourceType(@StringRes val labelRes: Int) {
     GITHUB_RELEASES(R.string.source_github),
     RSS_ATOM(R.string.source_rss),
