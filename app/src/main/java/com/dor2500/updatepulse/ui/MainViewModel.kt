@@ -2,16 +2,20 @@ package com.dor2500.updatepulse.ui
 
 import android.app.Application
 import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.dor2500.updatepulse.UpdatePulseApp
 import com.dor2500.updatepulse.data.local.TrackedServiceEntity
 import com.dor2500.updatepulse.data.local.UpdateEventEntity
+import com.dor2500.updatepulse.data.model.AppLanguage
 import com.dor2500.updatepulse.data.model.PollInterval
 import com.dor2500.updatepulse.data.model.ServiceCategory
 import com.dor2500.updatepulse.data.model.ThemeMode
 import com.dor2500.updatepulse.data.network.FetchedRelease
 import com.dor2500.updatepulse.data.preferences.UserPreferences
+import com.dor2500.updatepulse.notifications.NotificationHelper
 import com.dor2500.updatepulse.updater.AppReleaseInfo
 import com.dor2500.updatepulse.updater.DownloadState
 import com.dor2500.updatepulse.worker.WorkScheduler
@@ -95,6 +99,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun toggleServiceNotifications(service: TrackedServiceEntity) {
+        viewModelScope.launch {
+            repository.setNotificationsEnabled(service.id, !service.notificationsEnabled)
+        }
+    }
+
+    fun checkSingleService(service: TrackedServiceEntity) {
+        viewModelScope.launch {
+            val res = repository.checkSingleServiceById(service.id)
+            res.fold(
+                onSuccess = { ver -> _snackbarEvents.emit("${service.name}: $ver") },
+                onFailure = { err -> _snackbarEvents.emit("${service.name}: ${err.message}") }
+            )
+        }
+    }
+
+    fun clearFeed() {
+        viewModelScope.launch {
+            repository.clearFeed()
+            _snackbarEvents.emit("Update history cleared")
+        }
+    }
+
     fun markEventRead(eventId: Long) {
         viewModelScope.launch {
             repository.markEventRead(eventId)
@@ -147,6 +174,40 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setAutoCheckAppUpdate(enabled: Boolean) {
         viewModelScope.launch { prefsRepo.setAutoCheckAppUpdate(enabled) }
+    }
+
+    fun setGithubToken(token: String) {
+        viewModelScope.launch {
+            prefsRepo.setGithubToken(token)
+            _snackbarEvents.emit("GitHub token saved")
+        }
+    }
+
+    fun setAppLanguage(language: AppLanguage) {
+        viewModelScope.launch {
+            prefsRepo.setAppLanguage(language)
+            val locales = if (language.tag.isEmpty()) {
+                LocaleListCompat.getEmptyLocaleList()
+            } else {
+                LocaleListCompat.forLanguageTags(language.tag)
+            }
+            AppCompatDelegate.setApplicationLocales(locales)
+        }
+    }
+
+    fun sendTestNotification() {
+        val sample = UpdateEventEntity(
+            id = 99999L,
+            serviceId = "test",
+            serviceName = "UpdatePulse Test",
+            category = ServiceCategory.CUSTOM,
+            version = "v1.3.0",
+            releaseTitle = "Test Notification",
+            changelog = "Background notifications are working properly!",
+            releaseUrl = "https://github.com/dor2500/update-pulse/releases",
+            detectedAt = System.currentTimeMillis()
+        )
+        NotificationHelper.showUpdateNotification(getApplication(), sample)
     }
 
     fun checkForAppUpdate(silentIfUpToDate: Boolean = false) {

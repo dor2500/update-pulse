@@ -11,11 +11,11 @@ class AppContainer(context: Context) {
     private val appContext = context.applicationContext
     val database: AppDatabase by lazy { AppDatabase.getInstance(appContext) }
     val sourceFetcher: SourceFetcher by lazy { SourceFetcher() }
-    val repository: UpdateRepository by lazy {
-        UpdateRepository(appContext, database, sourceFetcher)
-    }
     val preferencesRepository: UserPreferencesRepository by lazy {
         UserPreferencesRepository(appContext)
+    }
+    val repository: UpdateRepository by lazy {
+        UpdateRepository(appContext, database, sourceFetcher, preferencesRepository)
     }
     val appUpdater: AppUpdater by lazy { AppUpdater(appContext) }
 }

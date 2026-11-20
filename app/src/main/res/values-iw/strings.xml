@@ -17,7 +17,10 @@
     <string name="feed_empty_title">אין עדכונים עדיין</string>
     <string name="feed_empty_subtitle">הירשם לשירותים בקטלוג או הוסף מקורות מותאמים אישית, ואז לחץ על בדוק עכשיו.</string>
     <string name="feed_open_link">פתח קישור</string>
+    <string name="feed_share">שתף</string>
     <string name="feed_mark_read">סמן כנקרא</string>
+    <string name="feed_search_hint">חפש עדכונים…</string>
+    <string name="feed_clear_history">נקה היסטוריה</string>
     <string name="feed_new_badge">חדש</string>
     <string name="feed_checking">בודק שירותים במעקב…</string>
     <string name="feed_check_complete">נבדקו %1$d שירותים • %2$d עדכונים חדשים</string>
@@ -27,6 +30,7 @@
     <string name="catalog_search_hint">חפש שירותים, קטגוריות…</string>
     <string name="catalog_all_categories">הכל</string>
     <string name="catalog_all_regions">כל המדינות</string>
+    <string name="catalog_subscribed_only">במעקב בלבד</string>
     <string name="catalog_count">%1$d שירותים</string>
 
     <!-- Regions -->
@@ -94,6 +98,16 @@
     <string name="theme_system">ברירת מחדל של המערכת</string>
     <string name="settings_dynamic_color">צבע דינמי (Material You)</string>
     <string name="settings_dynamic_color_sub">התאם צבעים לטפט המכשיר (אנדרואיד 12+)</string>
+    <string name="settings_language">שפה</string>
+    <string name="lang_system">ברירת מחדל של המערכת</string>
+    <string name="lang_english">English</string>
+    <string name="lang_hebrew">עברית</string>
+
+    <string name="settings_github_token">טוקן GitHub API (אופציונלי)</string>
+    <string name="settings_github_token_sub">מגדיל את מגבלת הבקשות מ-60 ל-5,000 בשעה</string>
+    <string name="settings_github_token_hint">ghp_…</string>
+    <string name="settings_test_notification">שלח התראת בדיקה</string>
+    <string name="settings_clear_feed">נקה היסטוריית עדכונים</string>
 
     <string name="settings_background">בדיקות ברקע</string>
     <string name="settings_poll_interval">תדירות בדיקה</string>

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.dor2500.updatepulse.data.model.AppLanguage
 import com.dor2500.updatepulse.data.model.PollInterval
 import com.dor2500.updatepulse.data.model.ThemeMode
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,9 @@ data class UserPreferences(
     val dynamicColor: Boolean = true,
     val pollInterval: PollInterval = PollInterval.HOUR_3,
     val wifiOnly: Boolean = false,
-    val autoCheckAppUpdate: Boolean = true
+    val autoCheckAppUpdate: Boolean = true,
+    val githubToken: String = "",
+    val appLanguage: AppLanguage = AppLanguage.SYSTEM
 )
 
 class UserPreferencesRepository(private val context: Context) {
@@ -30,6 +33,8 @@ class UserPreferencesRepository(private val context: Context) {
         val POLL_INTERVAL = stringPreferencesKey("poll_interval")
         val WIFI_ONLY = booleanPreferencesKey("wifi_only")
         val AUTO_CHECK_APP_UPDATE = booleanPreferencesKey("auto_check_app_update")
+        val GITHUB_TOKEN = stringPreferencesKey("github_token")
+        val APP_LANGUAGE = stringPreferencesKey("app_language")
     }
 
     val preferencesFlow: Flow<UserPreferences> = context.dataStore.data.map { prefs ->
@@ -41,12 +46,18 @@ class UserPreferencesRepository(private val context: Context) {
             runCatching { PollInterval.valueOf(it) }.getOrNull()
         } ?: PollInterval.HOUR_3
 
+        val language = prefs[Keys.APP_LANGUAGE]?.let {
+            runCatching { AppLanguage.valueOf(it) }.getOrNull()
+        } ?: AppLanguage.SYSTEM
+
         UserPreferences(
             themeMode = theme,
             dynamicColor = prefs[Keys.DYNAMIC_COLOR] ?: true,
             pollInterval = interval,
             wifiOnly = prefs[Keys.WIFI_ONLY] ?: false,
-            autoCheckAppUpdate = prefs[Keys.AUTO_CHECK_APP_UPDATE] ?: true
+            autoCheckAppUpdate = prefs[Keys.AUTO_CHECK_APP_UPDATE] ?: true,
+            githubToken = prefs[Keys.GITHUB_TOKEN] ?: "",
+            appLanguage = language
         )
     }
 
@@ -68,5 +79,13 @@ class UserPreferencesRepository(private val context: Context) {
 
     suspend fun setAutoCheckAppUpdate(enabled: Boolean) {
         context.dataStore.edit { it[Keys.AUTO_CHECK_APP_UPDATE] = enabled }
+    }
+
+    suspend fun setGithubToken(token: String) {
+        context.dataStore.edit { it[Keys.GITHUB_TOKEN] = token.trim() }
+    }
+
+    suspend fun setAppLanguage(language: AppLanguage) {
+        context.dataStore.edit { it[Keys.APP_LANGUAGE] = language.name }
     }
 }

@@ -27,8 +27,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.OpenInNew
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material.icons.rounded.DoneAll
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -37,6 +41,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -68,22 +73,50 @@ fun FeedScreen(
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onMarkRead: (Long) -> Unit,
-    onMarkAllRead: () -> Unit
+    onMarkAllRead: () -> Unit,
+    onClearFeed: () -> Unit
 ) {
     var showUnreadOnly by remember { mutableStateOf(false) }
-    val filtered = remember(events, showUnreadOnly) {
-        if (showUnreadOnly) events.filter { !it.isRead } else events
+    var showSearch by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filtered = remember(events, showUnreadOnly, searchQuery) {
+        events
+            .filter { !showUnreadOnly || !it.isRead }
+            .filter {
+                searchQuery.isBlank() ||
+                    it.serviceName.contains(searchQuery, ignoreCase = true) ||
+                    it.version.contains(searchQuery, ignoreCase = true) ||
+                    it.changelog.contains(searchQuery, ignoreCase = true)
+            }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text(stringResource(R.string.feed_title)) },
             actions = {
+                IconButton(onClick = {
+                    showSearch = !showSearch
+                    if (!showSearch) searchQuery = ""
+                }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = stringResource(R.string.feed_search_hint)
+                    )
+                }
                 if (events.any { !it.isRead }) {
                     IconButton(onClick = onMarkAllRead) {
                         Icon(
                             imageVector = Icons.Rounded.DoneAll,
                             contentDescription = stringResource(R.string.feed_mark_all_read)
+                        )
+                    }
+                }
+                if (events.isNotEmpty()) {
+                    IconButton(onClick = onClearFeed) {
+                        Icon(
+                            imageVector = Icons.Rounded.DeleteSweep,
+                            contentDescription = stringResource(R.string.feed_clear_history)
                         )
                     }
                 }
@@ -95,6 +128,27 @@ fun FeedScreen(
                 }
             }
         )
+
+        if (showSearch) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                placeholder = { Text(stringResource(R.string.feed_search_hint)) },
+                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+                trailingIcon = {
+                    if (searchQuery.isNotEmpty()) {
+                        IconButton(onClick = { searchQuery = "" }) {
+                            Icon(Icons.Rounded.Clear, contentDescription = null)
+                        }
+                    }
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp)
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -285,6 +339,22 @@ private fun UpdateEventCard(
                     TextButton(onClick = onMarkRead) {
                         Text(stringResource(R.string.feed_mark_read))
                     }
+                }
+                IconButton(onClick = {
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "${event.serviceName} ${event.version}\n${event.releaseUrl}"
+                        )
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, null))
+                }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Share,
+                        contentDescription = stringResource(R.string.feed_share),
+                        modifier = Modifier.size(18.dp)
+                    )
                 }
                 AssistChip(
                     onClick = {

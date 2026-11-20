@@ -36,6 +36,9 @@ interface TrackedServiceDao {
     @Query("UPDATE tracked_services SET isSubscribed = :subscribed WHERE id = :id")
     suspend fun setSubscribed(id: String, subscribed: Boolean)
 
+    @Query("UPDATE tracked_services SET notificationsEnabled = :enabled WHERE id = :id")
+    suspend fun setNotificationsEnabled(id: String, enabled: Boolean)
+
     @Query("DELETE FROM tracked_services WHERE id = :id")
     suspend fun deleteById(id: String)
 }
@@ -56,6 +59,9 @@ interface UpdateEventDao {
 
     @Query("UPDATE update_events SET isRead = 1")
     suspend fun markAllRead()
+
+    @Query("DELETE FROM update_events")
+    suspend fun deleteAll()
 
     @Query("DELETE FROM update_events WHERE serviceId = :serviceId")
     suspend fun deleteForService(serviceId: String)

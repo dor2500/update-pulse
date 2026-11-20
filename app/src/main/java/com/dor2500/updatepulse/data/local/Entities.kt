@@ -22,6 +22,7 @@ data class TrackedServiceEntity(
     val accentColorHex: Long = 0xFF60A5FAL,
     val isCustom: Boolean = false,
     val isSubscribed: Boolean = false,
+    val notificationsEnabled: Boolean = true,
     val lastKnownVersion: String? = null,
     val lastCheckedAt: Long? = null,
     val lastError: String? = null

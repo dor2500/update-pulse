@@ -35,6 +35,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -47,10 +48,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.dor2500.updatepulse.BuildConfig
 import com.dor2500.updatepulse.R
+import com.dor2500.updatepulse.data.model.AppLanguage
 import com.dor2500.updatepulse.data.model.PollInterval
 import com.dor2500.updatepulse.data.model.ThemeMode
 import com.dor2500.updatepulse.data.preferences.UserPreferences
@@ -62,8 +65,12 @@ fun SettingsScreen(
     isCheckingAppUpdate: Boolean,
     onThemeModeChange: (ThemeMode) -> Unit,
     onDynamicColorChange: (Boolean) -> Unit,
+    onLanguageChange: (AppLanguage) -> Unit,
     onPollIntervalChange: (PollInterval) -> Unit,
     onWifiOnlyChange: (Boolean) -> Unit,
+    onGithubTokenSave: (String) -> Unit,
+    onSendTestNotification: () -> Unit,
+    onClearFeed: () -> Unit,
     onAutoCheckAppUpdateChange: (Boolean) -> Unit,
     onCheckAppUpdate: () -> Unit,
     onExportBackup: (Uri) -> Unit,
@@ -136,6 +143,26 @@ fun SettingsScreen(
                     checked = preferences.dynamicColor,
                     onCheckedChange = onDynamicColorChange
                 )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.settings_language),
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    AppLanguage.entries.forEach { lang ->
+                        FilterChip(
+                            selected = preferences.appLanguage == lang,
+                            onClick = { onLanguageChange(lang) },
+                            label = { Text(stringResource(lang.labelRes)) }
+                        )
+                    }
+                }
             }
 
             // Background Checks
@@ -178,6 +205,45 @@ fun SettingsScreen(
                         Text(stringResource(R.string.settings_notifications_perm))
                     }
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = onSendTestNotification,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Rounded.NotificationsActive, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(R.string.settings_test_notification))
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                var tokenInput by remember(preferences.githubToken) { mutableStateOf(preferences.githubToken) }
+                Text(
+                    text = stringResource(R.string.settings_github_token),
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = stringResource(R.string.settings_github_token_sub),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = tokenInput,
+                        onValueChange = { tokenInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_github_token_hint)) },
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    Button(onClick = { onGithubTokenSave(tokenInput) }) {
+                        Text(stringResource(R.string.btn_save))
+                    }
+                }
             }
 
             // Backup & Restore
@@ -202,6 +268,13 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(stringResource(R.string.settings_import_json))
                     }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = onClearFeed,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.settings_clear_feed))
                 }
             }
 

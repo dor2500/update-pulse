@@ -7,11 +7,13 @@ import com.dor2500.updatepulse.data.local.TrackedServiceEntity
 import com.dor2500.updatepulse.data.local.UpdateEventEntity
 import com.dor2500.updatepulse.data.network.FetchedRelease
 import com.dor2500.updatepulse.data.network.SourceFetcher
+import com.dor2500.updatepulse.data.preferences.UserPreferencesRepository
 import com.dor2500.updatepulse.notifications.NotificationHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.serialization.Serializable
@@ -34,7 +36,8 @@ data class BackupPayload(
 class UpdateRepository(
     private val context: Context,
     private val db: AppDatabase,
-    private val fetcher: SourceFetcher
+    private val fetcher: SourceFetcher,
+    private val prefsRepo: UserPreferencesRepository
 ) {
     private val serviceDao = db.trackedServiceDao()
     private val eventDao = db.updateEventDao()
@@ -56,6 +59,56 @@ class UpdateRepository(
         serviceDao.setSubscribed(id, subscribed)
     }
 
+    suspend fun setNotificationsEnabled(id: String, enabled: Boolean) {
+        serviceDao.setNotificationsEnabled(id, enabled)
+    }
+
+    suspend fun clearFeed() {
+        eventDao.deleteAll()
+    }
+
+    suspend fun checkSingleServiceById(id: String): Result<String> {
+        val service = serviceDao.getById(id)
+            ?: return Result.failure(IllegalStateException("Service not found"))
+        val token = prefsRepo.preferencesFlow.first().githubToken
+        val now = System.currentTimeMillis()
+        val result = fetcher.fetchLatest(service, token)
+        return result.map { release ->
+            val isNew = service.lastKnownVersion != release.version
+            serviceDao.update(
+                service.copy(
+                    lastKnownVersion = release.version,
+                    lastCheckedAt = now,
+                    lastError = null
+                )
+            )
+            if (isNew) {
+                eventDao.insert(
+                    UpdateEventEntity(
+                        serviceId = service.id,
+                        serviceName = service.name,
+                        category = service.category,
+                        version = release.version,
+                        releaseTitle = release.title,
+                        changelog = release.changelog,
+                        releaseUrl = release.url,
+                        detectedAt = now,
+                        isRead = false,
+                        accentColorHex = service.accentColorHex
+                    )
+                )
+            }
+            release.version
+        }.onFailure { err ->
+            serviceDao.update(
+                service.copy(
+                    lastCheckedAt = now,
+                    lastError = err.message ?: "Unknown error"
+                )
+            )
+        }
+    }
+
     suspend fun saveCustomService(service: TrackedServiceEntity) {
         serviceDao.upsert(service.copy(isCustom = true))
     }
@@ -74,7 +127,8 @@ class UpdateRepository(
     }
 
     suspend fun testSource(service: TrackedServiceEntity): Result<FetchedRelease> {
-        return fetcher.fetchLatest(service)
+        val token = prefsRepo.preferencesFlow.first().githubToken
+        return fetcher.fetchLatest(service, token)
     }
 
     suspend fun checkAllSubscribed(notify: Boolean): CheckSummary = coroutineScope {
@@ -82,11 +136,12 @@ class UpdateRepository(
         val subscribed = serviceDao.getSubscribed()
         if (subscribed.isEmpty()) return@coroutineScope CheckSummary(0, 0)
 
+        val token = prefsRepo.preferencesFlow.first().githubToken
         val semaphore = Semaphore(4)
         val results = subscribed.map { service ->
             async {
                 semaphore.withPermit {
-                    checkSingleService(service, notify)
+                    checkSingleService(service, notify, token)
                 }
             }
         }.awaitAll()
@@ -97,10 +152,11 @@ class UpdateRepository(
 
     private suspend fun checkSingleService(
         service: TrackedServiceEntity,
-        notify: Boolean
+        notify: Boolean,
+        githubToken: String
     ): Boolean {
         val now = System.currentTimeMillis()
-        val result = fetcher.fetchLatest(service)
+        val result = fetcher.fetchLatest(service, githubToken)
         return result.fold(
             onSuccess = { release ->
                 val isNewVersion = service.lastKnownVersion != release.version
@@ -125,7 +181,7 @@ class UpdateRepository(
                         accentColorHex = service.accentColorHex
                     )
                     val insertedId = eventDao.insert(event)
-                    if (notify && service.lastKnownVersion != null) {
+                    if (notify && service.notificationsEnabled && service.lastKnownVersion != null) {
                         NotificationHelper.showUpdateNotification(
                             context,
                             event.copy(id = insertedId)

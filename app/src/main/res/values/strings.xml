@@ -17,7 +17,10 @@
     <string name="feed_empty_title">No updates yet</string>
     <string name="feed_empty_subtitle">Subscribe to services in the Catalog or add custom trackers, then tap Check Now.</string>
     <string name="feed_open_link">Open Link</string>
+    <string name="feed_share">Share</string>
     <string name="feed_mark_read">Mark Read</string>
+    <string name="feed_search_hint">Search updates…</string>
+    <string name="feed_clear_history">Clear History</string>
     <string name="feed_new_badge">NEW</string>
     <string name="feed_checking">Checking subscribed services…</string>
     <string name="feed_check_complete">Checked %1$d services • %2$d new updates</string>
@@ -27,6 +30,7 @@
     <string name="catalog_search_hint">Search services, categories…</string>
     <string name="catalog_all_categories">All</string>
     <string name="catalog_all_regions">All Regions</string>
+    <string name="catalog_subscribed_only">Subscribed</string>
     <string name="catalog_count">%1$d services</string>
 
     <!-- Regions -->
@@ -94,6 +98,16 @@
     <string name="theme_system">System Default</string>
     <string name="settings_dynamic_color">Material You Dynamic Color</string>
     <string name="settings_dynamic_color_sub">Adapt colors to your wallpaper (Android 12+)</string>
+    <string name="settings_language">Language</string>
+    <string name="lang_system">System Default</string>
+    <string name="lang_english">English</string>
+    <string name="lang_hebrew">עברית</string>
+
+    <string name="settings_github_token">GitHub API Token (Optional)</string>
+    <string name="settings_github_token_sub">Increases rate limit from 60 to 5,000 req/hr</string>
+    <string name="settings_github_token_hint">ghp_…</string>
+    <string name="settings_test_notification">Send Test Notification</string>
+    <string name="settings_clear_feed">Clear Update History</string>
 
     <string name="settings_background">Background Checks</string>
     <string name="settings_poll_interval">Polling Interval</string>

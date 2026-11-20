@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -55,7 +55,7 @@ private enum class NavTab(val labelRes: Int) {
     SETTINGS(R.string.nav_settings)
 }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
@@ -159,11 +159,14 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
                     isRefreshing = isRefreshing,
                     onRefresh = viewModel::checkNow,
                     onMarkRead = viewModel::markEventRead,
-                    onMarkAllRead = viewModel::markAllRead
+                    onMarkAllRead = viewModel::markAllRead,
+                    onClearFeed = viewModel::clearFeed
                 )
                 NavTab.CATALOG -> CatalogScreen(
                     services = services,
-                    onToggleSubscription = viewModel::toggleSubscription
+                    onToggleSubscription = viewModel::toggleSubscription,
+                    onToggleNotifications = viewModel::toggleServiceNotifications,
+                    onCheckService = viewModel::checkSingleService
                 )
                 NavTab.CUSTOM -> CustomScreen(
                     customServices = customServices,
@@ -179,8 +182,12 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
                     isCheckingAppUpdate = isCheckingAppUpdate,
                     onThemeModeChange = viewModel::setThemeMode,
                     onDynamicColorChange = viewModel::setDynamicColor,
+                    onLanguageChange = viewModel::setAppLanguage,
                     onPollIntervalChange = viewModel::setPollInterval,
                     onWifiOnlyChange = viewModel::setWifiOnly,
+                    onGithubTokenSave = viewModel::setGithubToken,
+                    onSendTestNotification = viewModel::sendTestNotification,
+                    onClearFeed = viewModel::clearFeed,
                     onAutoCheckAppUpdateChange = viewModel::setAutoCheckAppUpdate,
                     onCheckAppUpdate = { viewModel.checkForAppUpdate(silentIfUpToDate = false) },
                     onExportBackup = viewModel::exportBackup,

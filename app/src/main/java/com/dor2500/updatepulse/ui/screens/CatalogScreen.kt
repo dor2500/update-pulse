@@ -21,6 +21,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.NotificationsOff
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -55,15 +58,19 @@ import com.dor2500.updatepulse.data.model.ServiceRegion
 @Composable
 fun CatalogScreen(
     services: List<TrackedServiceEntity>,
-    onToggleSubscription: (TrackedServiceEntity) -> Unit
+    onToggleSubscription: (TrackedServiceEntity) -> Unit,
+    onToggleNotifications: (TrackedServiceEntity) -> Unit,
+    onCheckService: (TrackedServiceEntity) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<ServiceCategory?>(null) }
     var selectedRegion by remember { mutableStateOf<ServiceRegion?>(null) }
+    var subscribedOnly by remember { mutableStateOf(false) }
 
-    val catalogServices = remember(services, searchQuery, selectedCategory, selectedRegion) {
+    val catalogServices = remember(services, searchQuery, selectedCategory, selectedRegion, subscribedOnly) {
         services
             .filter { !it.isCustom }
+            .filter { !subscribedOnly || it.isSubscribed }
             .filter { selectedCategory == null || it.category == selectedCategory }
             .filter { selectedRegion == null || it.region == selectedRegion }
             .filter {
@@ -142,6 +149,11 @@ fun CatalogScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             FilterChip(
+                selected = subscribedOnly,
+                onClick = { subscribedOnly = !subscribedOnly },
+                label = { Text(stringResource(R.string.catalog_subscribed_only)) }
+            )
+            FilterChip(
                 selected = selectedRegion == null,
                 onClick = { selectedRegion = null },
                 label = { Text(stringResource(R.string.catalog_all_regions)) }
@@ -165,7 +177,9 @@ fun CatalogScreen(
             items(catalogServices, key = { it.id }) { service ->
                 CatalogServiceCard(
                     service = service,
-                    onToggle = { onToggleSubscription(service) }
+                    onToggle = { onToggleSubscription(service) },
+                    onToggleNotifications = { onToggleNotifications(service) },
+                    onCheckNow = { onCheckService(service) }
                 )
             }
         }
@@ -175,7 +189,9 @@ fun CatalogScreen(
 @Composable
 private fun CatalogServiceCard(
     service: TrackedServiceEntity,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    onToggleNotifications: () -> Unit,
+    onCheckNow: () -> Unit
 ) {
     val accent = Color(service.accentColorHex)
 
@@ -257,7 +273,32 @@ private fun CatalogServiceCard(
                     )
                 }
             }
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(4.dp))
+            if (service.isSubscribed) {
+                IconButton(onClick = onCheckNow, modifier = Modifier.size(36.dp)) {
+                    Icon(
+                        imageVector = Icons.Rounded.Refresh,
+                        contentDescription = stringResource(R.string.feed_check_now),
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+                IconButton(onClick = onToggleNotifications, modifier = Modifier.size(36.dp)) {
+                    Icon(
+                        imageVector = if (service.notificationsEnabled) {
+                            Icons.Rounded.Notifications
+                        } else {
+                            Icons.Rounded.NotificationsOff
+                        },
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                        tint = if (service.notificationsEnabled) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                }
+            }
             Switch(
                 checked = service.isSubscribed,
                 onCheckedChange = { onToggle() }

@@ -53,3 +53,9 @@ enum class PollInterval(val minutes: Long, val label: String) {
     HOUR_12(720, "12 hours"),
     HOUR_24(1440, "24 hours")
 }
+
+enum class AppLanguage(val tag: String, @StringRes val labelRes: Int) {
+    SYSTEM("", R.string.lang_system),
+    ENGLISH("en", R.string.lang_english),
+    HEBREW("iw", R.string.lang_hebrew)
+}

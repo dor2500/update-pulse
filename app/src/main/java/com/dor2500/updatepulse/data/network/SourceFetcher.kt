@@ -36,13 +36,17 @@ class SourceFetcher {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    suspend fun fetchLatest(service: TrackedServiceEntity): Result<FetchedRelease> =
+    suspend fun fetchLatest(
+        service: TrackedServiceEntity,
+        githubToken: String = ""
+    ): Result<FetchedRelease> =
         withContext(Dispatchers.IO) {
             runCatching {
                 when (service.sourceType) {
                     SourceType.GITHUB_RELEASES -> fetchGitHub(
                         repo = service.sourceUrlOrRepo.trim(),
-                        includePreReleases = service.includePreReleases
+                        includePreReleases = service.includePreReleases,
+                        githubToken = githubToken
                     )
                     SourceType.RSS_ATOM -> fetchRssAtom(service.sourceUrlOrRepo.trim())
                     SourceType.JSON_ENDPOINT -> fetchJson(
@@ -57,12 +61,19 @@ class SourceFetcher {
             }
         }
 
-    private fun executeGet(url: String, accept: String? = null): String {
+    private fun executeGet(
+        url: String,
+        accept: String? = null,
+        bearerToken: String = ""
+    ): String {
         val builder = Request.Builder()
             .url(url)
             .header("User-Agent", "UpdatePulse/${BuildConfig.VERSION_NAME} (Android)")
         if (accept != null) {
             builder.header("Accept", accept)
+        }
+        if (bearerToken.isNotBlank()) {
+            builder.header("Authorization", "Bearer ${bearerToken.trim()}")
         }
         client.newCall(builder.build()).execute().use { response ->
             if (!response.isSuccessful) {
@@ -72,7 +83,11 @@ class SourceFetcher {
         }
     }
 
-    private fun fetchGitHub(repo: String, includePreReleases: Boolean): FetchedRelease {
+    private fun fetchGitHub(
+        repo: String,
+        includePreReleases: Boolean,
+        githubToken: String
+    ): FetchedRelease {
         val cleanRepo = repo.removePrefix("https://github.com/").trim('/')
         require(cleanRepo.contains("/")) { "Invalid GitHub repo format. Expected owner/repo" }
 
@@ -82,7 +97,11 @@ class SourceFetcher {
             "https://api.github.com/repos/$cleanRepo/releases/latest"
         }
 
-        val body = executeGet(url, accept = "application/vnd.github+json")
+        val body = executeGet(
+            url = url,
+            accept = "application/vnd.github+json",
+            bearerToken = githubToken
+        )
         val element = json.parseToJsonElement(body)
         val releaseObj = if (includePreReleases) {
             element.jsonArray.firstOrNull()?.jsonObject
