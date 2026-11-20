@@ -64,12 +64,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _isCheckingAppUpdate = MutableStateFlow(false)
     val isCheckingAppUpdate: StateFlow<Boolean> = _isCheckingAppUpdate.asStateFlow()
 
+    private val _isScanningApps = MutableStateFlow(false)
+    val isScanningApps: StateFlow<Boolean> = _isScanningApps.asStateFlow()
+
     private val _downloadState = MutableStateFlow<DownloadState?>(null)
     val downloadState: StateFlow<DownloadState?> = _downloadState.asStateFlow()
 
     init {
         viewModelScope.launch {
             val prefs = prefsRepo.preferencesFlow.first()
+            if (prefs.autoScanApps || !prefs.hasCompletedInitialScan) {
+                scanInstalledApps(silentIfNoNew = true)
+            }
             if (prefs.autoCheckAppUpdate) {
                 checkForAppUpdate(silentIfUpToDate = true)
             }
@@ -174,6 +180,39 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setAutoCheckAppUpdate(enabled: Boolean) {
         viewModelScope.launch { prefsRepo.setAutoCheckAppUpdate(enabled) }
+    }
+
+    fun setAutoScanApps(enabled: Boolean) {
+        viewModelScope.launch { prefsRepo.setAutoScanApps(enabled) }
+    }
+
+    fun scanInstalledApps(silentIfNoNew: Boolean = false) {
+        if (_isScanningApps.value) return
+        viewModelScope.launch {
+            _isScanningApps.value = true
+            try {
+                val summary = repository.scanAndAutoSubscribeInstalledApps()
+                val prefs = prefsRepo.preferencesFlow.first()
+                prefsRepo.setInitialScanCompleted()
+                WorkScheduler.schedule(getApplication(), prefs.pollInterval, prefs.wifiOnly)
+                if (!silentIfNoNew || summary.newlyEnabled > 0) {
+                    val app = getApplication<Application>()
+                    _snackbarEvents.emit(
+                        app.getString(
+                            com.dor2500.updatepulse.R.string.scan_apps_result,
+                            summary.totalMatched,
+                            summary.newlyEnabled
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                if (!silentIfNoNew) {
+                    _snackbarEvents.emit("Scan failed: ${e.message ?: "Unknown error"}")
+                }
+            } finally {
+                _isScanningApps.value = false
+            }
+        }
     }
 
     fun setGithubToken(token: String) {

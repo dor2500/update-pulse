@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.NotificationsActive
+import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.SystemUpdate
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.Button
@@ -63,11 +64,14 @@ import com.dor2500.updatepulse.data.preferences.UserPreferences
 fun SettingsScreen(
     preferences: UserPreferences,
     isCheckingAppUpdate: Boolean,
+    isScanningApps: Boolean,
     onThemeModeChange: (ThemeMode) -> Unit,
     onDynamicColorChange: (Boolean) -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
     onPollIntervalChange: (PollInterval) -> Unit,
     onWifiOnlyChange: (Boolean) -> Unit,
+    onAutoScanAppsChange: (Boolean) -> Unit,
+    onScanInstalledApps: () -> Unit,
     onGithubTokenSave: (String) -> Unit,
     onSendTestNotification: () -> Unit,
     onClearFeed: () -> Unit,
@@ -213,6 +217,30 @@ fun SettingsScreen(
                     Icon(Icons.Rounded.NotificationsActive, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(R.string.settings_test_notification))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                SettingsToggleRow(
+                    title = stringResource(R.string.scan_apps_auto),
+                    subtitle = stringResource(R.string.scan_apps_auto_sub),
+                    checked = preferences.autoScanApps,
+                    onCheckedChange = onAutoScanAppsChange
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = onScanInstalledApps,
+                    enabled = !isScanningApps,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    if (isScanningApps) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Icon(Icons.Rounded.PhoneAndroid, contentDescription = null, modifier = Modifier.size(18.dp))
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(stringResource(R.string.scan_apps_action))
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 var tokenInput by remember(preferences.githubToken) { mutableStateOf(preferences.githubToken) }

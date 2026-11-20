@@ -95,6 +95,7 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val availableAppUpdate by viewModel.availableAppUpdate.collectAsStateWithLifecycle()
     val isCheckingAppUpdate by viewModel.isCheckingAppUpdate.collectAsStateWithLifecycle()
+    val isScanningApps by viewModel.isScanningApps.collectAsStateWithLifecycle()
     val downloadState by viewModel.downloadState.collectAsStateWithLifecycle()
 
     var currentTab by remember { mutableStateOf(NavTab.FEED) }
@@ -164,6 +165,8 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
                 )
                 NavTab.CATALOG -> CatalogScreen(
                     services = services,
+                    isScanningApps = isScanningApps,
+                    onScanInstalledApps = { viewModel.scanInstalledApps(silentIfNoNew = false) },
                     onToggleSubscription = viewModel::toggleSubscription,
                     onToggleNotifications = viewModel::toggleServiceNotifications,
                     onCheckService = viewModel::checkSingleService
@@ -182,11 +185,14 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
                 NavTab.SETTINGS -> SettingsScreen(
                     preferences = prefs,
                     isCheckingAppUpdate = isCheckingAppUpdate,
+                    isScanningApps = isScanningApps,
                     onThemeModeChange = viewModel::setThemeMode,
                     onDynamicColorChange = viewModel::setDynamicColor,
                     onLanguageChange = viewModel::setAppLanguage,
                     onPollIntervalChange = viewModel::setPollInterval,
                     onWifiOnlyChange = viewModel::setWifiOnly,
+                    onAutoScanAppsChange = viewModel::setAutoScanApps,
+                    onScanInstalledApps = { viewModel.scanInstalledApps(silentIfNoNew = false) },
                     onGithubTokenSave = viewModel::setGithubToken,
                     onSendTestNotification = viewModel::sendTestNotification,
                     onClearFeed = viewModel::clearFeed,

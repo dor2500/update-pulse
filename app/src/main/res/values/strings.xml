@@ -37,6 +37,10 @@
     <string name="catalog_subscribed_only">Subscribed</string>
     <string name="catalog_count">%1$d services</string>
     <string name="catalog_error">Error: %1$s</string>
+    <string name="scan_apps_action">Scan Device Apps</string>
+    <string name="scan_apps_auto">Auto-scan installed apps</string>
+    <string name="scan_apps_auto_sub">Automatically track &amp; notify for apps on your device</string>
+    <string name="scan_apps_result">Matched %1$d installed apps • %2$d newly enabled</string>
 
     <!-- Regions -->
     <string name="region_global">Global</string>

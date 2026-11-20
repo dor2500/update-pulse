@@ -3,6 +3,7 @@ package com.dor2500.updatepulse.data.repository
 import android.content.Context
 import com.dor2500.updatepulse.data.local.AppDatabase
 import com.dor2500.updatepulse.data.local.CuratedCatalog
+import com.dor2500.updatepulse.data.local.InstalledAppScanner
 import com.dor2500.updatepulse.data.local.TrackedServiceEntity
 import com.dor2500.updatepulse.data.local.UpdateEventEntity
 import com.dor2500.updatepulse.data.network.FetchedRelease
@@ -23,6 +24,11 @@ import kotlinx.serialization.json.Json
 data class CheckSummary(
     val checkedCount: Int,
     val newUpdatesCount: Int
+)
+
+data class AppScanSummary(
+    val totalMatched: Int,
+    val newlyEnabled: Int
 )
 
 @Serializable
@@ -53,6 +59,24 @@ class UpdateRepository(
 
     suspend fun ensureSeeded() {
         serviceDao.insertIgnoreAll(CuratedCatalog.defaultServices)
+    }
+
+    suspend fun scanAndAutoSubscribeInstalledApps(): AppScanSummary {
+        ensureSeeded()
+        val allServices = serviceDao.getAll()
+        val matches = InstalledAppScanner(context).scan(allServices)
+        if (matches.isEmpty()) {
+            return AppScanSummary(totalMatched = 0, newlyEnabled = 0)
+        }
+        val byId = allServices.associateBy { it.id }
+        val newlyEnabled = matches.count { match ->
+            val current = byId[match.serviceId]
+            current != null && (!current.isSubscribed || !current.notificationsEnabled)
+        }
+        matches.map { it.serviceId }.chunked(500).forEach { chunk ->
+            serviceDao.enableTrackingAndNotifications(chunk)
+        }
+        return AppScanSummary(totalMatched = matches.size, newlyEnabled = newlyEnabled)
     }
 
     suspend fun setSubscribed(id: String, subscribed: Boolean) {

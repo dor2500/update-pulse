@@ -39,6 +39,9 @@ interface TrackedServiceDao {
     @Query("UPDATE tracked_services SET notificationsEnabled = :enabled WHERE id = :id")
     suspend fun setNotificationsEnabled(id: String, enabled: Boolean)
 
+    @Query("UPDATE tracked_services SET isSubscribed = 1, notificationsEnabled = 1 WHERE id IN (:ids)")
+    suspend fun enableTrackingAndNotifications(ids: List<String>)
+
     @Query("DELETE FROM tracked_services WHERE id = :id")
     suspend fun deleteById(id: String)
 }

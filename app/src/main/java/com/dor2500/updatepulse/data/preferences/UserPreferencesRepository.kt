@@ -21,6 +21,8 @@ data class UserPreferences(
     val pollInterval: PollInterval = PollInterval.HOUR_3,
     val wifiOnly: Boolean = false,
     val autoCheckAppUpdate: Boolean = true,
+    val autoScanApps: Boolean = true,
+    val hasCompletedInitialScan: Boolean = false,
     val githubToken: String = "",
     val appLanguage: AppLanguage = AppLanguage.SYSTEM
 )
@@ -33,6 +35,8 @@ class UserPreferencesRepository(private val context: Context) {
         val POLL_INTERVAL = stringPreferencesKey("poll_interval")
         val WIFI_ONLY = booleanPreferencesKey("wifi_only")
         val AUTO_CHECK_APP_UPDATE = booleanPreferencesKey("auto_check_app_update")
+        val AUTO_SCAN_APPS = booleanPreferencesKey("auto_scan_apps")
+        val HAS_COMPLETED_INITIAL_SCAN = booleanPreferencesKey("has_completed_initial_scan")
         val GITHUB_TOKEN = stringPreferencesKey("github_token")
         val APP_LANGUAGE = stringPreferencesKey("app_language")
     }
@@ -56,6 +60,8 @@ class UserPreferencesRepository(private val context: Context) {
             pollInterval = interval,
             wifiOnly = prefs[Keys.WIFI_ONLY] ?: false,
             autoCheckAppUpdate = prefs[Keys.AUTO_CHECK_APP_UPDATE] ?: true,
+            autoScanApps = prefs[Keys.AUTO_SCAN_APPS] ?: true,
+            hasCompletedInitialScan = prefs[Keys.HAS_COMPLETED_INITIAL_SCAN] ?: false,
             githubToken = prefs[Keys.GITHUB_TOKEN] ?: "",
             appLanguage = language
         )
@@ -79,6 +85,14 @@ class UserPreferencesRepository(private val context: Context) {
 
     suspend fun setAutoCheckAppUpdate(enabled: Boolean) {
         context.dataStore.edit { it[Keys.AUTO_CHECK_APP_UPDATE] = enabled }
+    }
+
+    suspend fun setAutoScanApps(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.AUTO_SCAN_APPS] = enabled }
+    }
+
+    suspend fun setInitialScanCompleted() {
+        context.dataStore.edit { it[Keys.HAS_COMPLETED_INITIAL_SCAN] = true }
     }
 
     suspend fun setGithubToken(token: String) {

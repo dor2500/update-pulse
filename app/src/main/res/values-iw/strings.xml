@@ -37,6 +37,10 @@
     <string name="catalog_subscribed_only">במעקב בלבד</string>
     <string name="catalog_count">%1$d שירותים</string>
     <string name="catalog_error">שגיאה: %1$s</string>
+    <string name="scan_apps_action">סרוק אפליקציות במכשיר</string>
+    <string name="scan_apps_auto">סריקה אוטומטית של אפליקציות</string>
+    <string name="scan_apps_auto_sub">עקוב והפעל התראות אוטומטית עבור אפליקציות מותקנות</string>
+    <string name="scan_apps_result">זוהו %1$d אפליקציות מותקנות • %2$d הופעלו כעת</string>
 
     <!-- Regions -->
     <string name="region_global">גלובלי</string>

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.NotificationsOff
+import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CardDefaults
@@ -59,6 +60,8 @@ import com.dor2500.updatepulse.data.model.SourceType
 @Composable
 fun CatalogScreen(
     services: List<TrackedServiceEntity>,
+    isScanningApps: Boolean,
+    onScanInstalledApps: () -> Unit,
     onToggleSubscription: (TrackedServiceEntity) -> Unit,
     onToggleNotifications: (TrackedServiceEntity) -> Unit,
     onCheckService: (TrackedServiceEntity) -> Unit
@@ -104,6 +107,15 @@ fun CatalogScreen(
         TopAppBar(
             title = { Text(stringResource(R.string.catalog_title)) },
             actions = {
+                IconButton(
+                    onClick = onScanInstalledApps,
+                    enabled = !isScanningApps
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.PhoneAndroid,
+                        contentDescription = stringResource(R.string.scan_apps_action)
+                    )
+                }
                 Text(
                     text = stringResource(R.string.catalog_count, catalogServices.size),
                     style = MaterialTheme.typography.labelLarge,
