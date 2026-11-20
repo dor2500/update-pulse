@@ -6,6 +6,12 @@
 
 A native Android update tracker built with **Kotlin**, **Jetpack Compose**, **Material 3 (Material You)**, **Room**, and **WorkManager**.
 
+## Screenshots
+
+| Update Feed | Service Catalog | Custom Trackers | Add Custom Service |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/screenshots/01_feed.png" width="210" /> | <img src="docs/screenshots/02_catalog.png" width="210" /> | <img src="docs/screenshots/03_custom.png" width="210" /> | <img src="docs/screenshots/04_add_custom.png" width="210" /> |
+
 ## Features
 
 - **Curated Service Catalog:** Pre-populated, searchable catalog across Google & Pixel, Messaging & Social, Browsers, Android Power-User & Modding, PC/OS/Dev Tools, and Smart Home & Media.
