@@ -1,0 +1,21 @@
+package com.dor2500.updatepulse.di
+
+import android.content.Context
+import com.dor2500.updatepulse.data.local.AppDatabase
+import com.dor2500.updatepulse.data.network.SourceFetcher
+import com.dor2500.updatepulse.data.preferences.UserPreferencesRepository
+import com.dor2500.updatepulse.data.repository.UpdateRepository
+import com.dor2500.updatepulse.updater.AppUpdater
+
+class AppContainer(context: Context) {
+    private val appContext = context.applicationContext
+    val database: AppDatabase by lazy { AppDatabase.getInstance(appContext) }
+    val sourceFetcher: SourceFetcher by lazy { SourceFetcher() }
+    val repository: UpdateRepository by lazy {
+        UpdateRepository(appContext, database, sourceFetcher)
+    }
+    val preferencesRepository: UserPreferencesRepository by lazy {
+        UserPreferencesRepository(appContext)
+    }
+    val appUpdater: AppUpdater by lazy { AppUpdater(appContext) }
+}

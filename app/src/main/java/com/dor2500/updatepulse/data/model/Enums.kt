@@ -1,0 +1,41 @@
+package com.dor2500.updatepulse.data.model
+
+import androidx.annotation.StringRes
+import com.dor2500.updatepulse.R
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class ServiceCategory(@StringRes val labelRes: Int) {
+    GOOGLE_PIXEL(R.string.cat_google_pixel),
+    MESSAGING_SOCIAL(R.string.cat_messaging_social),
+    BROWSERS(R.string.cat_browsers),
+    ANDROID_POWER(R.string.cat_android_power),
+    PC_DEV(R.string.cat_pc_dev),
+    SMART_HOME_MEDIA(R.string.cat_smart_home_media),
+    CUSTOM(R.string.cat_custom)
+}
+
+@Serializable
+enum class SourceType(@StringRes val labelRes: Int) {
+    GITHUB_RELEASES(R.string.source_github),
+    RSS_ATOM(R.string.source_rss),
+    JSON_ENDPOINT(R.string.source_json),
+    WEBPAGE_REGEX(R.string.source_webpage)
+}
+
+enum class ThemeMode(@StringRes val labelRes: Int) {
+    DARK(R.string.theme_dark),
+    AMOLED(R.string.theme_amoled),
+    LIGHT(R.string.theme_light),
+    SYSTEM(R.string.theme_system)
+}
+
+enum class PollInterval(val minutes: Long, val label: String) {
+    MIN_15(15, "15 min"),
+    MIN_30(30, "30 min"),
+    HOUR_1(60, "1 hour"),
+    HOUR_3(180, "3 hours"),
+    HOUR_6(360, "6 hours"),
+    HOUR_12(720, "12 hours"),
+    HOUR_24(1440, "24 hours")
+}

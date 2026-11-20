@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UpdatePulse</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_feed">Feed</string>
+    <string name="nav_catalog">Catalog</string>
+    <string name="nav_custom">Custom</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Feed Screen -->
+    <string name="feed_title">Update Feed</string>
+    <string name="feed_check_now">Check Now</string>
+    <string name="feed_mark_all_read">Mark all read</string>
+    <string name="feed_filter_all">All</string>
+    <string name="feed_filter_unread">Unread</string>
+    <string name="feed_empty_title">No updates yet</string>
+    <string name="feed_empty_subtitle">Subscribe to services in the Catalog or add custom trackers, then tap Check Now.</string>
+    <string name="feed_open_link">Open Link</string>
+    <string name="feed_mark_read">Mark Read</string>
+    <string name="feed_new_badge">NEW</string>
+    <string name="feed_checking">Checking subscribed services…</string>
+    <string name="feed_check_complete">Checked %1$d services • %2$d new updates</string>
+
+    <!-- Catalog Screen -->
+    <string name="catalog_title">Service Catalog</string>
+    <string name="catalog_search_hint">Search services, categories…</string>
+    <string name="catalog_all_categories">All</string>
+    <string name="catalog_tracking_on">Tracking</string>
+    <string name="catalog_track">Track</string>
+    <string name="catalog_latest_version">Latest: %1$s</string>
+    <string name="catalog_not_checked">Not checked yet</string>
+
+    <!-- Categories -->
+    <string name="cat_google_pixel">Google &amp; Pixel</string>
+    <string name="cat_messaging_social">Messaging &amp; Social</string>
+    <string name="cat_browsers">Browsers</string>
+    <string name="cat_android_power">Android Power-User</string>
+    <string name="cat_pc_dev">PC, OS &amp; Dev</string>
+    <string name="cat_smart_home_media">Smart Home &amp; Media</string>
+    <string name="cat_custom">Custom</string>
+
+    <!-- Custom Screen -->
+    <string name="custom_title">Custom Trackers</string>
+    <string name="custom_add_fab">Add Tracker</string>
+    <string name="custom_empty_title">No custom trackers</string>
+    <string name="custom_empty_subtitle">Track any GitHub repository, RSS/Atom feed, JSON API, or webpage version string.</string>
+    <string name="custom_edit">Edit</string>
+    <string name="custom_delete">Delete</string>
+
+    <!-- Add/Edit Custom Modal -->
+    <string name="add_custom_title">Add Custom Service</string>
+    <string name="edit_custom_title">Edit Custom Service</string>
+    <string name="field_service_name">Service Name</string>
+    <string name="field_category">Category</string>
+    <string name="field_source_type">Source Engine</string>
+    <string name="source_github">GitHub Releases</string>
+    <string name="source_rss">RSS / Atom Feed</string>
+    <string name="source_json">JSON Endpoint</string>
+    <string name="source_webpage">Webpage Monitor</string>
+    <string name="field_github_repo">Repository (owner/repo)</string>
+    <string name="field_include_prereleases">Include pre-releases</string>
+    <string name="field_url">Endpoint / Feed URL</string>
+    <string name="field_json_key">JSON Key / Path (e.g. tag_name or data.version)</string>
+    <string name="field_regex_pattern">Regex Pattern (optional, group 1 = version)</string>
+    <string name="field_accent_color">Accent Color</string>
+    <string name="btn_test_source">Test Source</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="test_success">Detected version: %1$s</string>
+    <string name="test_failed">Failed: %1$s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme_mode">Theme Mode</string>
+    <string name="theme_dark">Dark (Default)</string>
+    <string name="theme_amoled">AMOLED Pure Black</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_system">System Default</string>
+    <string name="settings_dynamic_color">Material You Dynamic Color</string>
+    <string name="settings_dynamic_color_sub">Adapt colors to your wallpaper (Android 12+)</string>
+
+    <string name="settings_background">Background Checks</string>
+    <string name="settings_poll_interval">Polling Interval</string>
+    <string name="settings_wifi_only">Wi-Fi Only</string>
+    <string name="settings_wifi_only_sub">Only check for updates on unmetered networks</string>
+    <string name="settings_notifications_perm">Enable Notifications</string>
+    <string name="settings_notifications_perm_sub">Required on Android 13+ to alert you on new releases</string>
+
+    <string name="settings_backup">Backup &amp; Restore</string>
+    <string name="settings_export_json">Export Trackers (JSON)</string>
+    <string name="settings_import_json">Import Trackers (JSON)</string>
+    <string name="backup_export_success">Exported %1$d services</string>
+    <string name="backup_import_success">Imported %1$d services</string>
+    <string name="backup_error">Backup error: %1$s</string>
+
+    <string name="settings_app_updates">App Updates</string>
+    <string name="settings_current_version">Installed Version: %1$s</string>
+    <string name="settings_check_app_updates">Check for App Updates</string>
+    <string name="settings_auto_check_launch">Auto-check on launch</string>
+    <string name="updater_up_to_date">UpdatePulse is up to date (%1$s)</string>
+    <string name="updater_available_title">Update Available: %1$s</string>
+    <string name="updater_download_install">Download &amp; Install</string>
+    <string name="updater_downloading">Downloading APK… %1$d%%</string>
+    <string name="updater_error">Update check failed: %1$s</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_updates_name">Service Updates</string>
+    <string name="notif_channel_updates_desc">Notifications when tracked apps or services release a new version</string>
+    <string name="notif_new_version">%1$s %2$s released</string>
+    <string name="notif_action_open">Open Link</string>
+    <string name="notif_action_mark_read">Mark as Read</string>
+</resources>

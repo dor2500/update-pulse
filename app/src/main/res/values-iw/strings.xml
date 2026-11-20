@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UpdatePulse</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_feed">עדכונים</string>
+    <string name="nav_catalog">קטלוג</string>
+    <string name="nav_custom">מותאם אישית</string>
+    <string name="nav_settings">הגדרות</string>
+
+    <!-- Feed Screen -->
+    <string name="feed_title">פיד עדכונים</string>
+    <string name="feed_check_now">בדוק עכשיו</string>
+    <string name="feed_mark_all_read">סמן הכל כנקרא</string>
+    <string name="feed_filter_all">הכל</string>
+    <string name="feed_filter_unread">לא נקראו</string>
+    <string name="feed_empty_title">אין עדכונים עדיין</string>
+    <string name="feed_empty_subtitle">הירשם לשירותים בקטלוג או הוסף מקורות מותאמים אישית, ואז לחץ על בדוק עכשיו.</string>
+    <string name="feed_open_link">פתח קישור</string>
+    <string name="feed_mark_read">סמן כנקרא</string>
+    <string name="feed_new_badge">חדש</string>
+    <string name="feed_checking">בודק שירותים במעקב…</string>
+    <string name="feed_check_complete">נבדקו %1$d שירותים • %2$d עדכונים חדשים</string>
+
+    <!-- Catalog Screen -->
+    <string name="catalog_title">קטלוג שירותים</string>
+    <string name="catalog_search_hint">חפש שירותים, קטגוריות…</string>
+    <string name="catalog_all_categories">הכל</string>
+    <string name="catalog_tracking_on">במעקב</string>
+    <string name="catalog_track">עקוב</string>
+    <string name="catalog_latest_version">גרסה אחרונה: %1$s</string>
+    <string name="catalog_not_checked">טרם נבדק</string>
+
+    <!-- Categories -->
+    <string name="cat_google_pixel">גוגל ו-Pixel</string>
+    <string name="cat_messaging_social">הודעות ורשתות חברתיות</string>
+    <string name="cat_browsers">דפדפנים</string>
+    <string name="cat_android_power">כלי אנדרואיד מתקדמים</string>
+    <string name="cat_pc_dev">מחשב, מערכות ופיתוח</string>
+    <string name="cat_smart_home_media">בית חכם ומדיה</string>
+    <string name="cat_custom">מותאם אישית</string>
+
+    <!-- Custom Screen -->
+    <string name="custom_title">מעקבים מותאמים אישית</string>
+    <string name="custom_add_fab">הוסף מעקב</string>
+    <string name="custom_empty_title">אין מעקבים מותאמים אישית</string>
+    <string name="custom_empty_subtitle">עקוב אחר כל מאגר GitHub, פיד RSS/Atom, כתובת JSON או דף אינטרנט.</string>
+    <string name="custom_edit">ערוך</string>
+    <string name="custom_delete">מחק</string>
+
+    <!-- Add/Edit Custom Modal -->
+    <string name="add_custom_title">הוספת שירות מותאם אישית</string>
+    <string name="edit_custom_title">עריכת שירות מותאם אישית</string>
+    <string name="field_service_name">שם השירות</string>
+    <string name="field_category">קטגוריה</string>
+    <string name="field_source_type">מנוע מקור</string>
+    <string name="source_github">GitHub Releases</string>
+    <string name="source_rss">פיד RSS / Atom</string>
+    <string name="source_json">נקודת קצה JSON</string>
+    <string name="source_webpage">ניטור דף אינטרנט</string>
+    <string name="field_github_repo">מאגר (owner/repo)</string>
+    <string name="field_include_prereleases">כלול גרסאות קדם-שחרור</string>
+    <string name="field_url">כתובת URL של המקור</string>
+    <string name="field_json_key">מפתח JSON (למשל tag_name או data.version)</string>
+    <string name="field_regex_pattern">תבנית Regex (אופציונלי, קבוצה 1 = גרסה)</string>
+    <string name="field_accent_color">צבע הדגשה</string>
+    <string name="btn_test_source">בדוק מקור</string>
+    <string name="btn_save">שמור</string>
+    <string name="btn_cancel">ביטול</string>
+    <string name="test_success">גרסה שזוהתה: %1$s</string>
+    <string name="test_failed">נכשל: %1$s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">הגדרות</string>
+    <string name="settings_appearance">מראה</string>
+    <string name="settings_theme_mode">ערכת נושא</string>
+    <string name="theme_dark">כהה (ברירת מחדל)</string>
+    <string name="theme_amoled">AMOLED שחור טהור</string>
+    <string name="theme_light">בהיר</string>
+    <string name="theme_system">ברירת מחדל של המערכת</string>
+    <string name="settings_dynamic_color">צבע דינמי (Material You)</string>
+    <string name="settings_dynamic_color_sub">התאם צבעים לטפט המכשיר (אנדרואיד 12+)</string>
+
+    <string name="settings_background">בדיקות ברקע</string>
+    <string name="settings_poll_interval">תדירות בדיקה</string>
+    <string name="settings_wifi_only">Wi-Fi בלבד</string>
+    <string name="settings_wifi_only_sub">בדוק עדכונים רק ברשתות ללא הגבלה</string>
+    <string name="settings_notifications_perm">הפעל התראות</string>
+    <string name="settings_notifications_perm_sub">נדרש באנדרואיד 13+ לקבלת התראות על גרסאות חדשות</string>
+
+    <string name="settings_backup">גיבוי ושחזור</string>
+    <string name="settings_export_json">ייצוא מעקבים (JSON)</string>
+    <string name="settings_import_json">ייבוא מעקבים (JSON)</string>
+    <string name="backup_export_success">יוצאו %1$d שירותים</string>
+    <string name="backup_import_success">יובאו %1$d שירותים</string>
+    <string name="backup_error">שגיאת גיבוי: %1$s</string>
+
+    <string name="settings_app_updates">עדכוני אפליקציה</string>
+    <string name="settings_current_version">גרסה מותקנת: %1$s</string>
+    <string name="settings_check_app_updates">בדוק עדכונים לאפליקציה</string>
+    <string name="settings_auto_check_launch">בדיקה אוטומטית בהפעלה</string>
+    <string name="updater_up_to_date">UpdatePulse מעודכנת (%1$s)</string>
+    <string name="updater_available_title">עדכון זמין: %1$s</string>
+    <string name="updater_download_install">הורד והתקן</string>
+    <string name="updater_downloading">מוריד APK… %1$d%%</string>
+    <string name="updater_error">בדיקת העדכון נכשלה: %1$s</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_updates_name">עדכוני שירותים</string>
+    <string name="notif_channel_updates_desc">התראות כאשר אפליקציות או שירותים במעקב משחררים גרסה חדשה</string>
+    <string name="notif_new_version">%1$s %2$s שוחרר</string>
+    <string name="notif_action_open">פתח קישור</string>
+    <string name="notif_action_mark_read">סמן כנקרא</string>
+</resources>
