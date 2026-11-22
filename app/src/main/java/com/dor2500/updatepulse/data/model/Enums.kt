@@ -16,6 +16,7 @@ enum class ServiceCategory(@StringRes val labelRes: Int) {
     SECURITY_PRIVACY(R.string.cat_security_privacy),
     SELF_HOSTED(R.string.cat_self_hosted),
     GAMING_EMULATION(R.string.cat_gaming_emulation),
+    BETA(R.string.cat_beta),
     CUSTOM(R.string.cat_custom)
 }
 

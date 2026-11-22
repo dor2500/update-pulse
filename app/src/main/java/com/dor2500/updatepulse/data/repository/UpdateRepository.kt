@@ -59,6 +59,12 @@ class UpdateRepository(
 
     suspend fun ensureSeeded() {
         serviceDao.insertIgnoreAll(CuratedCatalog.defaultServices)
+        val betaIds = CuratedCatalog.defaultServices
+            .filter { it.category == com.dor2500.updatepulse.data.model.ServiceCategory.BETA }
+            .map { it.id }
+        if (betaIds.isNotEmpty()) {
+            serviceDao.updateCuratedCategory(betaIds, com.dor2500.updatepulse.data.model.ServiceCategory.BETA)
+        }
     }
 
     suspend fun scanAndAutoSubscribeInstalledApps(): AppScanSummary {

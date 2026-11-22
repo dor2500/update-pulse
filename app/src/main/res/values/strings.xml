@@ -65,6 +65,7 @@
     <string name="cat_security_privacy">Security &amp; Networking</string>
     <string name="cat_self_hosted">Self-Hosted &amp; Cloud</string>
     <string name="cat_gaming_emulation">Gaming &amp; Emulation</string>
+    <string name="cat_beta">Beta</string>
     <string name="cat_custom">Custom</string>
 
     <!-- Custom Screen -->

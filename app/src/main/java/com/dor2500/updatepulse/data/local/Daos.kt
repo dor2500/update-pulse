@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.dor2500.updatepulse.data.model.ServiceCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -41,6 +42,9 @@ interface TrackedServiceDao {
 
     @Query("UPDATE tracked_services SET isSubscribed = 1, notificationsEnabled = 1 WHERE id IN (:ids)")
     suspend fun enableTrackingAndNotifications(ids: List<String>)
+
+    @Query("UPDATE tracked_services SET category = :category WHERE id IN (:ids) AND isCustom = 0")
+    suspend fun updateCuratedCategory(ids: List<String>, category: ServiceCategory)
 
     @Query("DELETE FROM tracked_services WHERE id = :id")
     suspend fun deleteById(id: String)
