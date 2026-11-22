@@ -1,10 +1,11 @@
 package com.dor2500.updatepulse.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,25 +20,32 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.NotificationsOff
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,13 +82,21 @@ fun CatalogScreen(
     var selectedRegion by remember { mutableStateOf<ServiceRegion?>(null) }
     var selectedSourceType by remember { mutableStateOf<SourceType?>(null) }
     var subscribedOnly by remember { mutableStateOf(false) }
+    var showFilterSheet by remember { mutableStateOf(false) }
 
-    val hasActiveFilters = searchQuery.isNotBlank() ||
-        selectedChannel != ReleaseChannel.ALL ||
-        selectedCategory != null ||
-        selectedRegion != null ||
-        selectedSourceType != null ||
-        subscribedOnly
+    val activeSheetFilterCount = remember(
+        selectedChannel,
+        selectedCategory,
+        selectedRegion,
+        selectedSourceType
+    ) {
+        var count = 0
+        if (selectedChannel != ReleaseChannel.ALL) count++
+        if (selectedCategory != null) count++
+        if (selectedRegion != null) count++
+        if (selectedSourceType != null) count++
+        count
+    }
 
     val catalogServices = remember(
         services,
@@ -92,7 +108,6 @@ fun CatalogScreen(
         subscribedOnly
     ) {
         services
-            .filter { !it.isCustom }
             .filter { !subscribedOnly || it.isSubscribed }
             .filter {
                 when (selectedChannel) {
@@ -109,10 +124,6 @@ fun CatalogScreen(
                     it.name.contains(searchQuery, ignoreCase = true) ||
                     it.sourceUrlOrRepo.contains(searchQuery, ignoreCase = true)
             }
-    }
-
-    val categories = remember {
-        ServiceCategory.entries.filter { it != ServiceCategory.CUSTOM && it != ServiceCategory.BETA }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -156,115 +167,55 @@ fun CatalogScreen(
             shape = RoundedCornerShape(16.dp)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            ReleaseChannel.entries.forEach { channel ->
-                FilterChip(
-                    selected = selectedChannel == channel,
-                    onClick = { selectedChannel = channel },
-                    label = { Text(stringResource(channel.labelRes)) }
+            FilledTonalButton(
+                onClick = { showFilterSheet = true },
+                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.FilterList,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = if (activeSheetFilterCount > 0) {
+                        stringResource(R.string.catalog_filter_button_count, activeSheetFilterCount)
+                    } else {
+                        stringResource(R.string.catalog_filter_button)
+                    }
                 )
             }
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            FilterChip(
-                selected = selectedCategory == null,
-                onClick = { selectedCategory = null },
-                label = { Text(stringResource(R.string.catalog_all_categories)) }
-            )
-            categories.forEach { category ->
-                FilterChip(
-                    selected = selectedCategory == category,
-                    onClick = {
-                        selectedCategory = if (selectedCategory == category) null else category
-                    },
-                    label = { Text(stringResource(category.labelRes)) }
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
             FilterChip(
                 selected = subscribedOnly,
                 onClick = { subscribedOnly = !subscribedOnly },
                 label = { Text(stringResource(R.string.catalog_subscribed_only)) }
             )
-            FilterChip(
-                selected = selectedRegion == null,
-                onClick = { selectedRegion = null },
-                label = { Text(stringResource(R.string.catalog_all_regions)) }
-            )
-            ServiceRegion.entries.forEach { region ->
-                FilterChip(
-                    selected = selectedRegion == region,
-                    onClick = {
-                        selectedRegion = if (selectedRegion == region) null else region
-                    },
-                    label = { Text(stringResource(region.labelRes)) }
-                )
-            }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (hasActiveFilters) {
-                FilterChip(
-                    selected = false,
-                    onClick = {
-                        searchQuery = ""
-                        selectedChannel = ReleaseChannel.ALL
-                        selectedCategory = null
-                        selectedRegion = null
-                        selectedSourceType = null
-                        subscribedOnly = false
-                    },
-                    label = { Text(stringResource(R.string.catalog_reset_filters)) }
-                )
-            }
-            FilterChip(
-                selected = selectedSourceType == null,
-                onClick = { selectedSourceType = null },
-                label = { Text(stringResource(R.string.catalog_all_sources)) }
-            )
-            SourceType.entries.forEach { source ->
-                FilterChip(
-                    selected = selectedSourceType == source,
-                    onClick = {
-                        selectedSourceType = if (selectedSourceType == source) null else source
-                    },
-                    label = { Text(stringResource(source.labelRes)) }
-                )
-            }
-        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+        )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                top = 12.dp,
+                end = 16.dp,
+                bottom = 96.dp
+            ),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(catalogServices, key = { it.id }) { service ->
@@ -277,6 +228,196 @@ fun CatalogScreen(
             }
         }
     }
+
+    if (showFilterSheet) {
+        CatalogFilterBottomSheet(
+            initialChannel = selectedChannel,
+            initialCategory = selectedCategory,
+            initialRegion = selectedRegion,
+            initialSourceType = selectedSourceType,
+            onApply = { channel, category, region, sourceType ->
+                selectedChannel = channel
+                selectedCategory = category
+                selectedRegion = region
+                selectedSourceType = sourceType
+                showFilterSheet = false
+            },
+            onDismiss = { showFilterSheet = false }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun CatalogFilterBottomSheet(
+    initialChannel: ReleaseChannel,
+    initialCategory: ServiceCategory?,
+    initialRegion: ServiceRegion?,
+    initialSourceType: SourceType?,
+    onApply: (ReleaseChannel, ServiceCategory?, ServiceRegion?, SourceType?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var draftChannel by remember { mutableStateOf(initialChannel) }
+    var draftCategory by remember { mutableStateOf(initialCategory) }
+    var draftRegion by remember { mutableStateOf(initialRegion) }
+    var draftSourceType by remember { mutableStateOf(initialSourceType) }
+
+    val categories = remember {
+        ServiceCategory.entries.filter { it != ServiceCategory.BETA }
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.catalog_filter_sheet_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                FilterSection(title = stringResource(R.string.filter_section_channel)) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        ReleaseChannel.entries.forEach { channel ->
+                            FilterChip(
+                                selected = draftChannel == channel,
+                                onClick = { draftChannel = channel },
+                                label = { Text(stringResource(channel.labelRes)) }
+                            )
+                        }
+                    }
+                }
+
+                FilterSection(title = stringResource(R.string.filter_section_category)) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FilterChip(
+                            selected = draftCategory == null,
+                            onClick = { draftCategory = null },
+                            label = { Text(stringResource(R.string.catalog_all_categories)) }
+                        )
+                        categories.forEach { category ->
+                            FilterChip(
+                                selected = draftCategory == category,
+                                onClick = {
+                                    draftCategory = if (draftCategory == category) null else category
+                                },
+                                label = { Text(stringResource(category.labelRes)) }
+                            )
+                        }
+                    }
+                }
+
+                FilterSection(title = stringResource(R.string.filter_section_region)) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FilterChip(
+                            selected = draftRegion == null,
+                            onClick = { draftRegion = null },
+                            label = { Text(stringResource(R.string.catalog_all_regions)) }
+                        )
+                        ServiceRegion.entries.forEach { region ->
+                            FilterChip(
+                                selected = draftRegion == region,
+                                onClick = {
+                                    draftRegion = if (draftRegion == region) null else region
+                                },
+                                label = { Text(stringResource(region.labelRes)) }
+                            )
+                        }
+                    }
+                }
+
+                FilterSection(title = stringResource(R.string.filter_section_source)) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FilterChip(
+                            selected = draftSourceType == null,
+                            onClick = { draftSourceType = null },
+                            label = { Text(stringResource(R.string.catalog_all_sources)) }
+                        )
+                        SourceType.entries.forEach { source ->
+                            FilterChip(
+                                selected = draftSourceType == source,
+                                onClick = {
+                                    draftSourceType = if (draftSourceType == source) null else source
+                                },
+                                label = { Text(stringResource(source.labelRes)) }
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        draftChannel = ReleaseChannel.ALL
+                        draftCategory = null
+                        draftRegion = null
+                        draftSourceType = null
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.catalog_reset_filters))
+                }
+                Button(
+                    onClick = {
+                        onApply(draftChannel, draftCategory, draftRegion, draftSourceType)
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.btn_apply))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterSection(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        content()
+    }
 }
 
 @Composable
@@ -287,6 +428,17 @@ private fun CatalogServiceCard(
     onCheckNow: () -> Unit
 ) {
     val accent = Color(service.accentColorHex)
+    val sourceLabel = stringResource(service.sourceType.labelRes)
+    val regionLabel = if (service.region != ServiceRegion.GLOBAL) {
+        stringResource(service.region.labelRes)
+    } else {
+        null
+    }
+    val versionLabel = service.lastKnownVersion?.let {
+        stringResource(R.string.catalog_latest_version, it)
+    } ?: stringResource(R.string.catalog_not_checked)
+    val metadataLine = listOfNotNull(sourceLabel, regionLabel, versionLabel)
+        .joinToString(" • ")
 
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
@@ -327,44 +479,13 @@ private fun CatalogServiceCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(2.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(6.dp)
-                    ) {
-                        Text(
-                            text = stringResource(service.sourceType.labelRes),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                    }
-                    if (service.region != ServiceRegion.GLOBAL) {
-                        Surface(
-                            color = MaterialTheme.colorScheme.tertiaryContainer,
-                            shape = RoundedCornerShape(6.dp)
-                        ) {
-                            Text(
-                                text = stringResource(service.region.labelRes),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
-                    Text(
-                        text = service.lastKnownVersion?.let {
-                            stringResource(R.string.catalog_latest_version, it)
-                        } ?: stringResource(R.string.catalog_not_checked),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Text(
+                    text = metadataLine,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
                 service.lastError?.takeIf { it.isNotBlank() }?.let { err ->
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(

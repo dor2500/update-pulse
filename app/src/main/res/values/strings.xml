@@ -34,6 +34,14 @@
     <string name="catalog_all_regions">All Regions</string>
     <string name="catalog_all_sources">All Sources</string>
     <string name="catalog_reset_filters">Reset</string>
+    <string name="catalog_filter_button">Filter</string>
+    <string name="catalog_filter_button_count">Filter (%1$d)</string>
+    <string name="catalog_filter_sheet_title">Filter Services</string>
+    <string name="filter_section_channel">Channel</string>
+    <string name="filter_section_category">Category</string>
+    <string name="filter_section_region">Country / Region</string>
+    <string name="filter_section_source">Source</string>
+    <string name="btn_apply">Apply</string>
     <string name="catalog_subscribed_only">Subscribed</string>
     <string name="catalog_count">%1$d services</string>
     <string name="catalog_error">Error: %1$s</string>

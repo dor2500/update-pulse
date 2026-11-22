@@ -15,7 +15,6 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material.icons.rounded.DynamicFeed
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FloatingActionButton
@@ -43,7 +42,6 @@ import com.dor2500.updatepulse.ui.MainViewModel
 import com.dor2500.updatepulse.ui.components.AddEditCustomSheet
 import com.dor2500.updatepulse.ui.components.AppUpdateDialog
 import com.dor2500.updatepulse.ui.screens.CatalogScreen
-import com.dor2500.updatepulse.ui.screens.CustomScreen
 import com.dor2500.updatepulse.ui.screens.FeedScreen
 import com.dor2500.updatepulse.ui.screens.SettingsScreen
 import com.dor2500.updatepulse.ui.theme.UpdatePulseTheme
@@ -51,7 +49,6 @@ import com.dor2500.updatepulse.ui.theme.UpdatePulseTheme
 private enum class NavTab(val labelRes: Int) {
     FEED(R.string.nav_feed),
     CATALOG(R.string.nav_catalog),
-    CUSTOM(R.string.nav_custom),
     SETTINGS(R.string.nav_settings)
 }
 
@@ -88,7 +85,6 @@ class MainActivity : AppCompatActivity() {
 @Composable
 private fun UpdatePulseRoot(viewModel: MainViewModel) {
     val services by viewModel.services.collectAsStateWithLifecycle()
-    val customServices by viewModel.customServices.collectAsStateWithLifecycle()
     val feedEvents by viewModel.feedEvents.collectAsStateWithLifecycle()
     val unreadCount by viewModel.unreadCount.collectAsStateWithLifecycle()
     val prefs by viewModel.preferences.collectAsStateWithLifecycle()
@@ -112,7 +108,7 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
-            if (currentTab == NavTab.CUSTOM || currentTab == NavTab.CATALOG) {
+            if (currentTab == NavTab.CATALOG) {
                 FloatingActionButton(
                     onClick = {
                         editingCustomService = null
@@ -132,7 +128,6 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
                     val icon = when (tab) {
                         NavTab.FEED -> Icons.Rounded.DynamicFeed
                         NavTab.CATALOG -> Icons.Rounded.Apps
-                        NavTab.CUSTOM -> Icons.Rounded.Tune
                         NavTab.SETTINGS -> Icons.Rounded.Settings
                     }
                     NavigationBarItem(
@@ -170,17 +165,6 @@ private fun UpdatePulseRoot(viewModel: MainViewModel) {
                     onToggleSubscription = viewModel::toggleSubscription,
                     onToggleNotifications = viewModel::toggleServiceNotifications,
                     onCheckService = viewModel::checkSingleService
-                )
-                NavTab.CUSTOM -> CustomScreen(
-                    customServices = customServices,
-                    onToggleSubscription = viewModel::toggleSubscription,
-                    onToggleNotifications = viewModel::toggleServiceNotifications,
-                    onCheckService = viewModel::checkSingleService,
-                    onEdit = { service ->
-                        editingCustomService = service
-                        showCustomSheet = true
-                    },
-                    onDelete = viewModel::deleteCustomService
                 )
                 NavTab.SETTINGS -> SettingsScreen(
                     preferences = prefs,
