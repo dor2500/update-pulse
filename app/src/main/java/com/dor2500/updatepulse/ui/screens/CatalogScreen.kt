@@ -52,6 +52,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dor2500.updatepulse.R
 import com.dor2500.updatepulse.data.local.TrackedServiceEntity
+import com.dor2500.updatepulse.data.local.isBetaChannel
+import com.dor2500.updatepulse.data.model.ReleaseChannel
 import com.dor2500.updatepulse.data.model.ServiceCategory
 import com.dor2500.updatepulse.data.model.ServiceRegion
 import com.dor2500.updatepulse.data.model.SourceType
@@ -67,12 +69,14 @@ fun CatalogScreen(
     onCheckService: (TrackedServiceEntity) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    var selectedChannel by remember { mutableStateOf(ReleaseChannel.ALL) }
     var selectedCategory by remember { mutableStateOf<ServiceCategory?>(null) }
     var selectedRegion by remember { mutableStateOf<ServiceRegion?>(null) }
     var selectedSourceType by remember { mutableStateOf<SourceType?>(null) }
     var subscribedOnly by remember { mutableStateOf(false) }
 
     val hasActiveFilters = searchQuery.isNotBlank() ||
+        selectedChannel != ReleaseChannel.ALL ||
         selectedCategory != null ||
         selectedRegion != null ||
         selectedSourceType != null ||
@@ -81,6 +85,7 @@ fun CatalogScreen(
     val catalogServices = remember(
         services,
         searchQuery,
+        selectedChannel,
         selectedCategory,
         selectedRegion,
         selectedSourceType,
@@ -89,6 +94,13 @@ fun CatalogScreen(
         services
             .filter { !it.isCustom }
             .filter { !subscribedOnly || it.isSubscribed }
+            .filter {
+                when (selectedChannel) {
+                    ReleaseChannel.ALL -> true
+                    ReleaseChannel.REGULAR -> !it.isBetaChannel()
+                    ReleaseChannel.BETA -> it.isBetaChannel()
+                }
+            }
             .filter { selectedCategory == null || it.category == selectedCategory }
             .filter { selectedRegion == null || it.region == selectedRegion }
             .filter { selectedSourceType == null || it.sourceType == selectedSourceType }
@@ -100,7 +112,7 @@ fun CatalogScreen(
     }
 
     val categories = remember {
-        ServiceCategory.entries.filter { it != ServiceCategory.CUSTOM }
+        ServiceCategory.entries.filter { it != ServiceCategory.CUSTOM && it != ServiceCategory.BETA }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -145,6 +157,22 @@ fun CatalogScreen(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ReleaseChannel.entries.forEach { channel ->
+                FilterChip(
+                    selected = selectedChannel == channel,
+                    onClick = { selectedChannel = channel },
+                    label = { Text(stringResource(channel.labelRes)) }
+                )
+            }
+        }
 
         Row(
             modifier = Modifier
@@ -209,6 +237,7 @@ fun CatalogScreen(
                     selected = false,
                     onClick = {
                         searchQuery = ""
+                        selectedChannel = ReleaseChannel.ALL
                         selectedCategory = null
                         selectedRegion = null
                         selectedSourceType = null

@@ -14,8 +14,8 @@ android {
         applicationId = "com.dor2500.updatepulse"
         minSdk = 26
         targetSdk = 35
-        versionCode = 8
-        versionName = "1.5.1"
+        versionCode = 9
+        versionName = "1.5.2"
 
         buildConfigField("String", "GITHUB_REPO", "\"dor2500/update-pulse\"")
 

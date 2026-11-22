@@ -72,6 +72,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dor2500.updatepulse.R
 import com.dor2500.updatepulse.data.local.UpdateEventEntity
+import com.dor2500.updatepulse.data.local.isBetaChannel
+import com.dor2500.updatepulse.data.model.ReleaseChannel
 import com.dor2500.updatepulse.data.model.ServiceCategory
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,6 +87,7 @@ fun FeedScreen(
     onClearFeed: () -> Unit
 ) {
     var showUnreadOnly by remember { mutableStateOf(false) }
+    var selectedChannel by remember { mutableStateOf(ReleaseChannel.ALL) }
     var selectedCategory by remember { mutableStateOf<ServiceCategory?>(null) }
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -93,9 +96,16 @@ fun FeedScreen(
         events.map { it.category }.distinct()
     }
 
-    val filtered = remember(events, showUnreadOnly, selectedCategory, searchQuery) {
+    val filtered = remember(events, showUnreadOnly, selectedChannel, selectedCategory, searchQuery) {
         events
             .filter { !showUnreadOnly || !it.isRead }
+            .filter {
+                when (selectedChannel) {
+                    ReleaseChannel.ALL -> true
+                    ReleaseChannel.REGULAR -> !it.isBetaChannel()
+                    ReleaseChannel.BETA -> it.isBetaChannel()
+                }
+            }
             .filter { selectedCategory == null || it.category == selectedCategory }
             .filter {
                 searchQuery.isBlank() ||
@@ -172,9 +182,10 @@ fun FeedScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             FilterChip(
-                selected = !showUnreadOnly && selectedCategory == null,
+                selected = !showUnreadOnly && selectedChannel == ReleaseChannel.ALL && selectedCategory == null,
                 onClick = {
                     showUnreadOnly = false
+                    selectedChannel = ReleaseChannel.ALL
                     selectedCategory = null
                 },
                 label = { Text(stringResource(R.string.feed_filter_all)) }
@@ -183,6 +194,28 @@ fun FeedScreen(
                 selected = showUnreadOnly,
                 onClick = { showUnreadOnly = !showUnreadOnly },
                 label = { Text(stringResource(R.string.feed_filter_unread)) }
+            )
+            FilterChip(
+                selected = selectedChannel == ReleaseChannel.REGULAR,
+                onClick = {
+                    selectedChannel = if (selectedChannel == ReleaseChannel.REGULAR) {
+                        ReleaseChannel.ALL
+                    } else {
+                        ReleaseChannel.REGULAR
+                    }
+                },
+                label = { Text(stringResource(R.string.channel_regular)) }
+            )
+            FilterChip(
+                selected = selectedChannel == ReleaseChannel.BETA,
+                onClick = {
+                    selectedChannel = if (selectedChannel == ReleaseChannel.BETA) {
+                        ReleaseChannel.ALL
+                    } else {
+                        ReleaseChannel.BETA
+                    }
+                },
+                label = { Text(stringResource(R.string.channel_beta)) }
             )
             if (availableCategories.size > 1) {
                 availableCategories.forEach { category ->

@@ -64,3 +64,9 @@ enum class AppLanguage(val tag: String, @StringRes val labelRes: Int) {
     ENGLISH("en", R.string.lang_english),
     HEBREW("iw", R.string.lang_hebrew)
 }
+
+enum class ReleaseChannel(@StringRes val labelRes: Int) {
+    ALL(R.string.channel_all),
+    REGULAR(R.string.channel_regular),
+    BETA(R.string.channel_beta)
+}

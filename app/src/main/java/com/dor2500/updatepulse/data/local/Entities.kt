@@ -42,3 +42,18 @@ data class UpdateEventEntity(
     val isRead: Boolean = false,
     val accentColorHex: Long = 0xFF60A5FAL
 )
+
+private val BETA_CHANNEL_REGEX = Regex(
+    """\b(beta|canary|nightly|alpha|insider|insiders|preview|pre-release)\b""",
+    RegexOption.IGNORE_CASE
+)
+
+fun TrackedServiceEntity.isBetaChannel(): Boolean =
+    includePreReleases ||
+        category == ServiceCategory.BETA ||
+        BETA_CHANNEL_REGEX.containsMatchIn(name)
+
+fun UpdateEventEntity.isBetaChannel(): Boolean =
+    category == ServiceCategory.BETA ||
+        BETA_CHANNEL_REGEX.containsMatchIn(serviceName) ||
+        BETA_CHANNEL_REGEX.containsMatchIn(version)

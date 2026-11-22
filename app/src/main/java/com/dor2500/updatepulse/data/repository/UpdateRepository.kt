@@ -59,12 +59,17 @@ class UpdateRepository(
 
     suspend fun ensureSeeded() {
         serviceDao.insertIgnoreAll(CuratedCatalog.defaultServices)
-        val betaIds = CuratedCatalog.defaultServices
-            .filter { it.category == com.dor2500.updatepulse.data.model.ServiceCategory.BETA }
-            .map { it.id }
-        if (betaIds.isNotEmpty()) {
-            serviceDao.updateCuratedCategory(betaIds, com.dor2500.updatepulse.data.model.ServiceCategory.BETA)
-        }
+        val googleIds = listOf("google_android_beta", "google_app")
+        val browserIds = listOf(
+            "browser_chrome_beta",
+            "browser_chrome_canary",
+            "browser_firefox_nightly",
+            "browser_firefox_beta",
+            "browser_vivaldi",
+            "browser_edge_canary"
+        )
+        serviceDao.updateCuratedCategory(googleIds, com.dor2500.updatepulse.data.model.ServiceCategory.GOOGLE_PIXEL)
+        serviceDao.updateCuratedCategory(browserIds, com.dor2500.updatepulse.data.model.ServiceCategory.BROWSERS)
     }
 
     suspend fun scanAndAutoSubscribeInstalledApps(): AppScanSummary {

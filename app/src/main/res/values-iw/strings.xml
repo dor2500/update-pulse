@@ -68,6 +68,11 @@
     <string name="cat_beta">בטא</string>
     <string name="cat_custom">מותאם אישית</string>
 
+    <!-- Release Channels -->
+    <string name="channel_all">הכל</string>
+    <string name="channel_regular">רגיל</string>
+    <string name="channel_beta">בטא</string>
+
     <!-- Custom Screen -->
     <string name="custom_title">מעקבים מותאמים אישית</string>
     <string name="custom_add_fab">הוסף מעקב</string>

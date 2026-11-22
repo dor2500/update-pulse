@@ -68,6 +68,11 @@
     <string name="cat_beta">Beta</string>
     <string name="cat_custom">Custom</string>
 
+    <!-- Release Channels -->
+    <string name="channel_all">All</string>
+    <string name="channel_regular">Regular</string>
+    <string name="channel_beta">Beta</string>
+
     <!-- Custom Screen -->
     <string name="custom_title">Custom Trackers</string>
     <string name="custom_add_fab">Add Tracker</string>
