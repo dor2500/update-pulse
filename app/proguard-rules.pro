@@ -7,11 +7,11 @@
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
--keep,includedescriptorclasses class com.dor2500.updatepulse.**$$serializer { *; }
--keepclassmembers class com.dor2500.updatepulse.** {
+-keep,includedescriptorclasses class com.dor2500.uptrack.**$$serializer { *; }
+-keepclassmembers class com.dor2500.uptrack.** {
     *** Companion;
 }
--keepclasseswithmembers class com.dor2500.updatepulse.** {
+-keepclasseswithmembers class com.dor2500.uptrack.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 

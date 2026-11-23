@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">UpdatePulse</string>
+    <string name="app_name">UpTrack</string>
 
     <!-- Bottom Navigation -->
     <string name="nav_feed">Feed</string>
@@ -160,7 +160,7 @@
     <string name="settings_current_version">Installed Version: %1$s</string>
     <string name="settings_check_app_updates">Check for App Updates</string>
     <string name="settings_auto_check_launch">Auto-check on launch</string>
-    <string name="updater_up_to_date">UpdatePulse is up to date (%1$s)</string>
+    <string name="updater_up_to_date">UpTrack is up to date (%1$s)</string>
     <string name="updater_available_title">Update Available: %1$s</string>
     <string name="updater_download_install">Download &amp; Install</string>
     <string name="updater_downloading">Downloading APK… %1$d%%</string>

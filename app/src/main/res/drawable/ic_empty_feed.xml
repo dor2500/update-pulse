@@ -13,7 +13,7 @@
         android:fillColor="#60A5FA"
         android:fillAlpha="0.12"
         android:pathData="M70,70m-38,0a38,38 0,1 1,76 0a38,38 0,1 1,-76 0" />
-    <!-- Center pulse line -->
+    <!-- Center signal line -->
     <path
         android:fillColor="#00000000"
         android:pathData="M34,74 L50,74 L57,58 L65,90 L73,46 L81,80 L87,67 L92,74 L106,74"

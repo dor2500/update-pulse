@@ -11,7 +11,7 @@
         tools:ignore="QueryAllPackagesPermission" />
 
     <application
-        android:name=".UpdatePulseApp"
+        android:name=".UpTrackApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -19,13 +19,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.UpdatePulse.Splash"
+        android:theme="@style/Theme.UpTrack.Splash"
         tools:targetApi="35">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.UpdatePulse.Splash">
+            android:theme="@style/Theme.UpTrack.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

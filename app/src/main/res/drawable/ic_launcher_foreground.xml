@@ -13,7 +13,7 @@
         android:strokeAlpha="0.35"
         android:strokeColor="#60A5FA" />
 
-    <!-- Pulse wave + Upward update arrow -->
+    <!-- Signal wave + Upward update arrow -->
     <path
         android:fillColor="#00000000"
         android:pathData="M26,58 L37,58 L42,46 L49,68 L54,36 L60,60 L65,52 L70,58 L82,58"

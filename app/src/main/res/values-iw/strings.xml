@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">UpdatePulse</string>
+    <string name="app_name">UpTrack</string>
 
     <!-- Bottom Navigation -->
     <string name="nav_feed">עדכונים</string>
@@ -160,7 +160,7 @@
     <string name="settings_current_version">גרסה מותקנת: %1$s</string>
     <string name="settings_check_app_updates">בדוק עדכונים לאפליקציה</string>
     <string name="settings_auto_check_launch">בדיקה אוטומטית בהפעלה</string>
-    <string name="updater_up_to_date">UpdatePulse מעודכנת (%1$s)</string>
+    <string name="updater_up_to_date">UpTrack מעודכנת (%1$s)</string>
     <string name="updater_available_title">עדכון זמין: %1$s</string>
     <string name="updater_download_install">הורד והתקן</string>
     <string name="updater_downloading">מוריד APK… %1$d%%</string>

@@ -7,17 +7,17 @@ plugins {
 }
 
 android {
-    namespace = "com.dor2500.updatepulse"
+    namespace = "com.dor2500.uptrack"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.dor2500.updatepulse"
+        applicationId = "com.dor2500.uptrack"
         minSdk = 26
         targetSdk = 35
-        versionCode = 11
-        versionName = "1.6.0"
+        versionCode = 12
+        versionName = "1.7.0"
 
-        buildConfigField("String", "GITHUB_REPO", "\"dor2500/update-pulse\"")
+        buildConfigField("String", "GITHUB_REPO", "\"dor2500/uptrack\"")
 
         vectorDrawables {
             useSupportLibrary = true

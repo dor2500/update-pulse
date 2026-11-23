@@ -5,7 +5,7 @@
       <stop offset="55%" stop-color="#0F172A" />
       <stop offset="100%" stop-color="#1E1B4B" />
     </linearGradient>
-    <linearGradient id="pulse" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#38BDF8" />
       <stop offset="50%" stop-color="#818CF8" />
       <stop offset="100%" stop-color="#C084FC" />
@@ -15,8 +15,8 @@
   <circle cx="190" cy="160" r="88" fill="#2563EB" fill-opacity="0.12" />
   <circle cx="190" cy="160" r="62" fill="none" stroke="#60A5FA" stroke-opacity="0.35" stroke-width="3" />
   <path d="M120 172 L148 172 L160 144 L176 196 L190 116 L206 176 L218 156 L230 172 L260 172"
-        fill="none" stroke="url(#pulse)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+        fill="none" stroke="url(#accent)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
   <circle cx="190" cy="102" r="6" fill="#38BDF8" />
-  <text x="320" y="152" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="60" font-weight="700" fill="#F8FAFC">UpdatePulse</text>
+  <text x="320" y="152" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="60" font-weight="700" fill="#F8FAFC">UpTrack</text>
   <text x="320" y="200" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="24" fill="#94A3B8">Native Android Update Tracker • Material You • Jetpack Compose</text>
 </svg>

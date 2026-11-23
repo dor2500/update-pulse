@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "UpdatePulse"
+rootProject.name = "UpTrack"
 include(":app")

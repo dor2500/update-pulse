@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/banner.svg" alt="UpdatePulse Banner" width="100%" />
+  <img src="docs/banner.svg" alt="UpTrack Banner" width="100%" />
 </p>
 
-# UpdatePulse
+# UpTrack
 
 A native Android update tracker built with **Kotlin**, **Jetpack Compose**, **Material 3 (Material You)**, **Room**, and **WorkManager**.
 
@@ -23,4 +23,4 @@ A native Android update tracker built with **Kotlin**, **Jetpack Compose**, **Ma
 
 ## Download
 
-Grab the latest APK from the [Releases](https://github.com/dor2500/update-pulse/releases) page.
+Grab the latest APK from the [Releases](https://github.com/dor2500/uptrack/releases) page.
