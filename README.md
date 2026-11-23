@@ -14,7 +14,7 @@ A native Android update tracker built with **Kotlin**, **Jetpack Compose**, **Ma
 
 ## Features
 
-- **Curated Service Catalog:** Pre-populated, searchable catalog across Google & Pixel, Messaging & Social, Browsers, Android Power-User & Modding, PC/OS/Dev Tools, and Smart Home & Media.
+- **Curated Service Catalog:** Pre-populated, searchable catalog of 540+ services across Google & Pixel, Messaging & Social, Browsers, Android Power-User & Modding, AI & LLMs, Windows & OS, PC/Dev Tools, Smart Home & Media, Security, Self-Hosted, Gaming, and regional apps. See [SOURCES.md](SOURCES.md) for the full breakdown of update sources and engines.
 - **Custom Service Trackers:** Track any **GitHub Releases** repository, **RSS/Atom** feed, **JSON** endpoint, or **Webpage** via Regex — with a built-in **Test Source** button.
 - **Material You & Dark-First Design:** Dynamic Color on Android 12+, Dark Mode by default, plus AMOLED Pure Black, Light, and System themes. Full English and Hebrew (RTL) support.
 - **Background Checking & Rich Notifications:** Configurable `WorkManager` polling intervals, Wi-Fi only mode, grouped notifications with **Open Link** and **Mark as Read** actions.
