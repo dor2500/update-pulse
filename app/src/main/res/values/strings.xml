@@ -68,6 +68,7 @@
     <string name="cat_browsers">Browsers</string>
     <string name="cat_android_power">Android Power-User</string>
     <string name="cat_ai_llm">AI &amp; LLMs</string>
+    <string name="cat_windows_os">Windows &amp; OS</string>
     <string name="cat_pc_dev">PC, OS &amp; Dev</string>
     <string name="cat_smart_home_media">Smart Home &amp; Media</string>
     <string name="cat_security_privacy">Security &amp; Networking</string>

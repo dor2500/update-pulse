@@ -68,6 +68,7 @@
     <string name="cat_browsers">דפדפנים</string>
     <string name="cat_android_power">כלי אנדרואיד מתקדמים</string>
     <string name="cat_ai_llm">בינה מלאכותית ו-LLM</string>
+    <string name="cat_windows_os">Windows ומערכות הפעלה</string>
     <string name="cat_pc_dev">מחשב, מערכות ופיתוח</string>
     <string name="cat_smart_home_media">בית חכם ומדיה</string>
     <string name="cat_security_privacy">אבטחה, פרטיות ורשת</string>

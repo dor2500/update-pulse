@@ -70,6 +70,10 @@ class UpdateRepository(
         )
         serviceDao.updateCuratedCategory(googleIds, com.dor2500.updatepulse.data.model.ServiceCategory.GOOGLE_PIXEL)
         serviceDao.updateCuratedCategory(browserIds, com.dor2500.updatepulse.data.model.ServiceCategory.BROWSERS)
+        serviceDao.updateCuratedCategory(
+            listOf("dev_win11_insider"),
+            com.dor2500.updatepulse.data.model.ServiceCategory.WINDOWS_OS
+        )
     }
 
     suspend fun scanAndAutoSubscribeInstalledApps(): AppScanSummary {

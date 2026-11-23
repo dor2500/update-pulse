@@ -125,6 +125,44 @@ object CuratedCatalog {
         accentColorHex = color
     )
 
+    private fun jsonApi(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        url: String,
+        key: String,
+        color: Long,
+        subscribed: Boolean = false
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.JSON_ENDPOINT,
+        sourceUrlOrRepo = url,
+        jsonKey = key,
+        accentColorHex = color,
+        isSubscribed = subscribed
+    )
+
+    private fun web(
+        id: String,
+        name: String,
+        category: ServiceCategory,
+        url: String,
+        regex: String,
+        color: Long,
+        subscribed: Boolean = false
+    ) = TrackedServiceEntity(
+        id = id,
+        name = name,
+        category = category,
+        sourceType = SourceType.WEBPAGE_REGEX,
+        sourceUrlOrRepo = url,
+        regexPattern = regex,
+        accentColorHex = color,
+        isSubscribed = subscribed
+    )
+
     val defaultServices: List<TrackedServiceEntity> = buildList {
         // =====================================================================
         // 1. GOOGLE & PIXEL (35)
@@ -315,9 +353,41 @@ object CuratedCatalog {
         add(gh("ai_autogen", "Microsoft AutoGen", ServiceCategory.AI_LLM, "microsoft/autogen", 0xFF60A5FAL))
 
         // =====================================================================
-        // 6. PC, OS & DEV TOOLS (65)
+        // 6. WINDOWS & OS UPDATES (29)
         // =====================================================================
-        add(rss("dev_win11_insider", "Windows 11 Insider Preview", ServiceCategory.PC_DEV, "https://blogs.windows.com/windows-insider/feed/", 0xFF0EA5E9L))
+        add(web("win_11_updates", "Windows 11 Official Updates (OS Build)", ServiceCategory.WINDOWS_OS, "https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information", """(2[2-9]\d{3}\.\d{3,5})""", 0xFF0078D4L, subscribed = true))
+        add(web("win_10_updates", "Windows 10 Official Updates (OS Build)", ServiceCategory.WINDOWS_OS, "https://learn.microsoft.com/en-us/windows/release-health/release-information", """(1904[1-5]\.\d{3,5})""", 0xFF0284C7L))
+        add(rss("dev_win11_insider", "Windows 11 Insider Preview", ServiceCategory.WINDOWS_OS, "https://blogs.windows.com/windows-insider/feed/", 0xFF0EA5E9L))
+        add(jsonApi("win_11_lifecycle", "Windows 11 Feature Release", ServiceCategory.WINDOWS_OS, "https://endoflife.date/api/windows.json", "0.latest", 0xFF38BDF8L))
+        add(jsonApi("win_server_updates", "Windows Server Latest Build", ServiceCategory.WINDOWS_OS, "https://endoflife.date/api/windows-server.json", "0.latest", 0xFF2563EBL))
+        add(rss("win_experience_blog", "Windows Experience Blog", ServiceCategory.WINDOWS_OS, "https://blogs.windows.com/windowsexperience/feed/", 0xFF0EA5E9L))
+        add(rss("win_itpro_blog", "Windows IT Pro & Patch Updates", ServiceCategory.WINDOWS_OS, "https://techcommunity.microsoft.com/t5/s/gxcuf89792/rss/board?board.id=Windows-ITPro-blog", 0xFF3B82F6L))
+        add(rss("win_dev_blog", "Windows Developer Blog", ServiceCategory.WINDOWS_OS, "https://blogs.windows.com/windowsdeveloper/feed/", 0xFF60A5FAL))
+        add(rss("win_sysinternals", "Microsoft Sysinternals", ServiceCategory.WINDOWS_OS, "https://techcommunity.microsoft.com/t5/s/gxcuf89792/rss/board?board.id=Sysinternals-Blog", 0xFF0284C7L))
+        add(gh("win_wsl", "WSL (Windows Subsystem for Linux)", ServiceCategory.WINDOWS_OS, "microsoft/WSL", 0xFF38BDF8L))
+        add(gh("win_app_sdk", "Windows App SDK", ServiceCategory.WINDOWS_OS, "microsoft/WindowsAppSDK", 0xFF2563EBL))
+        add(gh("win_dotnet", ".NET Runtime & SDK", ServiceCategory.WINDOWS_OS, "dotnet/core", 0xFF6366F1L))
+        add(gh("win_edit", "Microsoft Edit (CLI)", ServiceCategory.WINDOWS_OS, "microsoft/edit", 0xFF0EA5E9L))
+        add(gh("win_unigetui", "UniGetUI (WingetUI)", ServiceCategory.WINDOWS_OS, "marticliment/UniGetUI", 0xFF38BDF8L))
+        add(gh("win_files_app", "Files App (Windows Explorer)", ServiceCategory.WINDOWS_OS, "Files-Community/Files", 0xFF60A5FAL))
+        add(gh("win_explorer_patcher", "ExplorerPatcher (Windows 11)", ServiceCategory.WINDOWS_OS, "valinet/ExplorerPatcher", 0xFF0284C7L))
+        add(gh("win_translucenttb", "TranslucentTB", ServiceCategory.WINDOWS_OS, "TranslucentTB/TranslucentTB", 0xFF38BDF8L))
+        add(gh("win_util_ctt", "WinUtil (Chris Titus Tech)", ServiceCategory.WINDOWS_OS, "ChrisTitusTech/winutil", 0xFF22C55EL))
+        add(gh("win_lively_wallpaper", "Lively Wallpaper", ServiceCategory.WINDOWS_OS, "rocksdanister/lively", 0xFFA855F7L))
+        add(gh("win_quicklook", "QuickLook for Windows", ServiceCategory.WINDOWS_OS, "QL-Win/QuickLook", 0xFF34D399L))
+        add(gh("os_nvidia_drivers", "NVIDIA Open GPU Drivers", ServiceCategory.WINDOWS_OS, "NVIDIA/open-gpu-kernel-modules", 0xFF22C55EL))
+        add(gh("os_fwupd", "fwupd (Firmware Updates)", ServiceCategory.WINDOWS_OS, "fwupd/fwupd", 0xFF14B8A6L))
+        add(jsonApi("os_macos", "macOS Latest Release", ServiceCategory.WINDOWS_OS, "https://endoflife.date/api/macos.json", "0.latest", 0xFFE2E8F0L))
+        add(jsonApi("os_ios", "iOS / iPadOS Latest Release", ServiceCategory.WINDOWS_OS, "https://endoflife.date/api/ios.json", "0.latest", 0xFF94A3B8L))
+        add(rss("os_linux_kernel", "Linux Kernel Releases", ServiceCategory.WINDOWS_OS, "https://www.kernel.org/feeds/kdist.xml", 0xFFFBBF24L))
+        add(jsonApi("os_ubuntu", "Ubuntu Linux", ServiceCategory.WINDOWS_OS, "https://endoflife.date/api/ubuntu.json", "0.latest", 0xFFF97316L))
+        add(jsonApi("os_fedora", "Fedora Linux", ServiceCategory.WINDOWS_OS, "https://endoflife.date/api/fedora.json", "0.latest", 0xFF3B82F6L))
+        add(jsonApi("os_debian", "Debian Linux", ServiceCategory.WINDOWS_OS, "https://endoflife.date/api/debian.json", "0.latest", 0xFFEF4444L))
+        add(rss("os_arch_linux", "Arch Linux News", ServiceCategory.WINDOWS_OS, "https://archlinux.org/feeds/news/", 0xFF38BDF8L))
+
+        // =====================================================================
+        // 7. PC, OS & DEV TOOLS (64)
+        // =====================================================================
         add(gh("dev_powertoys", "Microsoft PowerToys", ServiceCategory.PC_DEV, "microsoft/PowerToys", 0xFF38BDF8L, subscribed = true))
         add(gh("dev_vscode", "Visual Studio Code", ServiceCategory.PC_DEV, "microsoft/vscode", 0xFF2563EBL))
         add(gh("dev_vscodium", "VSCodium", ServiceCategory.PC_DEV, "VSCodium/vscodium", 0xFF3B82F6L))

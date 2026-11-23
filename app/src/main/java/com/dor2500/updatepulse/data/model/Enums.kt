@@ -11,6 +11,7 @@ enum class ServiceCategory(@StringRes val labelRes: Int) {
     BROWSERS(R.string.cat_browsers),
     ANDROID_POWER(R.string.cat_android_power),
     AI_LLM(R.string.cat_ai_llm),
+    WINDOWS_OS(R.string.cat_windows_os),
     PC_DEV(R.string.cat_pc_dev),
     SMART_HOME_MEDIA(R.string.cat_smart_home_media),
     SECURITY_PRIVACY(R.string.cat_security_privacy),
