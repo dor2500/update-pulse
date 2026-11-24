@@ -277,12 +277,39 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _downloadState.value = null
     }
 
-    fun downloadAndInstallAppUpdate(release: AppReleaseInfo) {
+    fun getInstalledLegacyPackages(): List<String> = appUpdater.findInstalledLegacyPackages()
+
+    fun uninstallPackage(packageName: String) {
+        appUpdater.requestUninstall(packageName)
+    }
+
+    fun uninstallCurrentApp() {
+        appUpdater.requestUninstall(getApplication<Application>().packageName)
+    }
+
+    fun downloadAndInstallAppUpdate(release: AppReleaseInfo, uninstallFirst: Boolean = false) {
         viewModelScope.launch {
             appUpdater.downloadApk(release.apkDownloadUrl).collect { state ->
-                _downloadState.value = state
                 if (state is DownloadState.Ready) {
-                    appUpdater.installApk(state.apkFile)
+                    val sameSig = appUpdater.hasSameSigningCertificate(state.apkFile)
+                    if (uninstallFirst || !sameSig) {
+                        runCatching {
+                            appUpdater.saveApkToDownloads(state.apkFile, release.version)
+                        }.fold(
+                            onSuccess = { savedName ->
+                                _downloadState.value = DownloadState.NeedsUninstall(savedName)
+                                appUpdater.requestUninstall(getApplication<Application>().packageName)
+                            },
+                            onFailure = { err ->
+                                _downloadState.value = DownloadState.Error(err.message ?: "Failed to save APK")
+                            }
+                        )
+                    } else {
+                        _downloadState.value = state
+                        appUpdater.installApk(state.apkFile)
+                    }
+                } else {
+                    _downloadState.value = state
                 }
             }
         }

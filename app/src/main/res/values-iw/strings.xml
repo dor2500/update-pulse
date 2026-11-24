@@ -163,6 +163,12 @@
     <string name="updater_up_to_date">UpTrack מעודכנת (%1$s)</string>
     <string name="updater_available_title">עדכון זמין: %1$s</string>
     <string name="updater_download_install">הורד והתקן</string>
+    <string name="updater_uninstall_first">הסר גרסה קיימת לפני ההתקנה</string>
+    <string name="updater_uninstall_first_sub">שומר את ה-APK בתיקיית ההורדות ומקפיץ הסרה לפני ההתקנה</string>
+    <string name="updater_needs_uninstall">הקובץ נשמר בתיקיית ההורדות (%1$s). אשר את ההסרה ולאחר מכן פתח את הקובץ מההורדות להתקנה.</string>
+    <string name="updater_uninstall_now">הסר עכשיו</string>
+    <string name="updater_legacy_detected">זוהתה גרסה ישנה מהשם הקודם שעדיין מותקנת במכשיר.</string>
+    <string name="updater_remove_legacy">הסר גרסה ישנה</string>
     <string name="updater_downloading">מוריד APK… %1$d%%</string>
     <string name="updater_error">בדיקת העדכון נכשלה: %1$s</string>
 

@@ -182,6 +182,8 @@ private fun UpTrackRoot(viewModel: MainViewModel) {
                     onClearFeed = viewModel::clearFeed,
                     onAutoCheckAppUpdateChange = viewModel::setAutoCheckAppUpdate,
                     onCheckAppUpdate = { viewModel.checkForAppUpdate(silentIfUpToDate = false) },
+                    legacyPackages = viewModel.getInstalledLegacyPackages(),
+                    onRemoveLegacyPackage = viewModel::uninstallPackage,
                     onExportBackup = viewModel::exportBackup,
                     onImportBackup = viewModel::importBackup
                 )
@@ -202,7 +204,12 @@ private fun UpTrackRoot(viewModel: MainViewModel) {
         AppUpdateDialog(
             release = release,
             downloadState = downloadState,
-            onDownloadAndInstall = { viewModel.downloadAndInstallAppUpdate(release) },
+            legacyPackages = viewModel.getInstalledLegacyPackages(),
+            onRemoveLegacyPackage = viewModel::uninstallPackage,
+            onUninstallCurrentApp = viewModel::uninstallCurrentApp,
+            onDownloadAndInstall = { uninstallFirst ->
+                viewModel.downloadAndInstallAppUpdate(release, uninstallFirst)
+            },
             onDismiss = viewModel::dismissAppUpdateDialog
         )
     }

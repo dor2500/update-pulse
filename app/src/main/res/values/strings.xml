@@ -163,6 +163,12 @@
     <string name="updater_up_to_date">UpTrack is up to date (%1$s)</string>
     <string name="updater_available_title">Update Available: %1$s</string>
     <string name="updater_download_install">Download &amp; Install</string>
+    <string name="updater_uninstall_first">Uninstall current version first</string>
+    <string name="updater_uninstall_first_sub">Saves APK to Downloads and opens uninstall prompt before installing</string>
+    <string name="updater_needs_uninstall">APK saved to Downloads (%1$s). Uninstall the old app, then tap the APK in Downloads to install.</string>
+    <string name="updater_uninstall_now">Uninstall Now</string>
+    <string name="updater_legacy_detected">An older legacy app is still installed on this device.</string>
+    <string name="updater_remove_legacy">Remove Legacy App</string>
     <string name="updater_downloading">Downloading APK… %1$d%%</string>
     <string name="updater_error">Update check failed: %1$s</string>
 

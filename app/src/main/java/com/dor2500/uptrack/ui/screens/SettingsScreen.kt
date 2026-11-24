@@ -77,6 +77,8 @@ fun SettingsScreen(
     onClearFeed: () -> Unit,
     onAutoCheckAppUpdateChange: (Boolean) -> Unit,
     onCheckAppUpdate: () -> Unit,
+    legacyPackages: List<String>,
+    onRemoveLegacyPackage: (String) -> Unit,
     onExportBackup: (Uri) -> Unit,
     onImportBackup: (Uri) -> Unit
 ) {
@@ -337,6 +339,21 @@ fun SettingsScreen(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(R.string.settings_check_app_updates))
+                }
+                if (legacyPackages.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = stringResource(R.string.updater_legacy_detected),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    OutlinedButton(
+                        onClick = { onRemoveLegacyPackage(legacyPackages.first()) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.updater_remove_legacy))
+                    }
                 }
             }
         }
