@@ -14,8 +14,8 @@ android {
         applicationId = "com.dor2500.uptrack"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
-        versionName = "1.7.1"
+        versionCode = 14
+        versionName = "1.7.2"
 
         buildConfigField("String", "GITHUB_REPO", "\"dor2500/uptrack\"")
 
@@ -26,6 +26,9 @@ android {
 
     signingConfigs {
         create("release") {
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
             val keystorePath = System.getenv("KEYSTORE_PATH")
             if (!keystorePath.isNullOrBlank() && file(keystorePath).exists()) {
                 storeFile = file(keystorePath)
