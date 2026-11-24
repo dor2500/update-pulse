@@ -11,3 +11,7 @@
 *.jks
 *.keystore
 release-keystore.jks
+
+.keystore/
+*.jks
+*.keystore
